@@ -1,3 +1,3 @@
 export default function RegistrarVenta() {
-    return <h1>Registrar Venta</h1>;
+    return <h1>En desarrollo</h1>;
 }

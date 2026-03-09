@@ -1,3 +1,3 @@
 export default function Ventas() {
-    return <h1>Ventas</h1>;
+    return <h1>En desarrollo</h1>;
 }
