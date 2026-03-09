@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard";
 import Ventas from "../pages/Ventas";
 import Inventario from "../pages/Inventario";
 import RegistrarVenta from "../pages/RegistrarVenta";
+import RegistrarProducto from "../pages/RegistrarProducto";
 
 export default function AppRoutes() {
     return (
@@ -17,10 +18,11 @@ export default function AppRoutes() {
 
             {/* Main app */}
             <Route element={<MainLayout />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/ventas" element={<Ventas />} />
-                <Route path="/inventario" element={<Inventario />} />
-                <Route path="/registrar-venta" element={<RegistrarVenta/>} />
+                <Route path='/' element={<Dashboard />} />
+                <Route path='/ventas' element={<Ventas />} />
+                <Route path='/inventario' element={<Inventario />} />
+                <Route path='/registrar-venta' element={<RegistrarVenta />} />
+                <Route path='/registrar-producto' element={<RegistrarProducto />} />
             </Route>
 
             {/* Admin */}
