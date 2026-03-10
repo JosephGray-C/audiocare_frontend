@@ -30,6 +30,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@eslint/js", "npm:9.39.4"],\
           ["@tailwindcss/vite", "virtual:62dac1738363c968d617fd3a7a1b5baec5227c2f39d154a14c5e59dea446955d6a5cc82a9882b37fc7bd9ef68ec22b2af9386c2ce77d15a4a75d9b2585e0b92d#npm:4.2.1"],\
+          ["@tauri-apps/api", "npm:2.10.1"],\
           ["@tauri-apps/cli", "npm:2.10.1"],\
           ["@types/react", "npm:19.2.14"],\
           ["@types/react-dom", "virtual:62dac1738363c968d617fd3a7a1b5baec5227c2f39d154a14c5e59dea446955d6a5cc82a9882b37fc7bd9ef68ec22b2af9386c2ce77d15a4a75d9b2585e0b92d#npm:19.2.3"],\
@@ -1252,6 +1253,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@tauri-apps/api", [\
+      ["npm:2.10.1", {\
+        "packageLocation": "../../../../../../../AppData/Local/Yarn/Berry/cache/@tauri-apps-api-npm-2.10.1-d1dd3b06ca-10c0.zip/node_modules/@tauri-apps/api/",\
+        "packageDependencies": [\
+          ["@tauri-apps/api", "npm:2.10.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@tauri-apps/cli", [\
       ["npm:2.10.1", {\
         "packageLocation": "../../../../../../../AppData/Local/Yarn/Berry/cache/@tauri-apps-cli-npm-2.10.1-d476dcd9f9-10c0.zip/node_modules/@tauri-apps/cli/",\
@@ -1589,6 +1599,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@eslint/js", "npm:9.39.4"],\
           ["@tailwindcss/vite", "virtual:62dac1738363c968d617fd3a7a1b5baec5227c2f39d154a14c5e59dea446955d6a5cc82a9882b37fc7bd9ef68ec22b2af9386c2ce77d15a4a75d9b2585e0b92d#npm:4.2.1"],\
+          ["@tauri-apps/api", "npm:2.10.1"],\
           ["@tauri-apps/cli", "npm:2.10.1"],\
           ["@types/react", "npm:19.2.14"],\
           ["@types/react-dom", "virtual:62dac1738363c968d617fd3a7a1b5baec5227c2f39d154a14c5e59dea446955d6a5cc82a9882b37fc7bd9ef68ec22b2af9386c2ce77d15a4a75d9b2585e0b92d#npm:19.2.3"],\
