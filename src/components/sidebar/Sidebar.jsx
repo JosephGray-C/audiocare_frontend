@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { menu } from "../../config/menu";
+import logo from "../../assets/logo_blanco_AC.png";
 
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 
@@ -9,7 +10,7 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={`h-screen flex flex-col justify-between bg-[#0f172a] text-gray-300 transition-[width] duration-300
+            className={`h-full flex flex-col justify-between bg-[#0f172a] text-gray-300 transition-[width] duration-300
             ${collapsed ? "w-20" : "w-64"}`}
         >
             {/* TOP SECTION */}
@@ -23,7 +24,7 @@ export default function Sidebar() {
                         duration-300
                     `}
                 >
-                    {!collapsed && <h1 className='text-xl font-bold transition-opacity duration-200'>Audiocare</h1>}
+                    {!collapsed && <img src={logo} alt='Audiocare' className='w-40 select-none pointer-events-none' draggable='false' />}
 
                     <button
                         onClick={() => setCollapsed(!collapsed)}
