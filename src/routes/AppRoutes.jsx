@@ -18,11 +18,11 @@ export default function AppRoutes() {
 
             {/* Main app */}
             <Route element={<MainLayout />}>
-                <Route path='/' element={<Dashboard />} />
-                <Route path='/ventas' element={<Ventas />} />
-                <Route path='/inventario' element={<Inventario />} />
-                <Route path='/registrar-venta' element={<RegistrarVenta />} />
-                <Route path='/registrar-producto' element={<RegistrarProducto />} />
+                <Route path='/' element={<Dashboard />} handle={{ title: "Dashboard" }} />
+                <Route path='/ventas' element={<Ventas />} handle={{ title: "Ventas" }} />
+                <Route path='/inventario' element={<Inventario />} handle={{ title: "Inventario" }} />
+                <Route path='/registrar-venta' element={<RegistrarVenta />} handle={{ title: "Registrar Venta" }} />
+                <Route path='/registrar-producto' element={<RegistrarProducto />} handle={{ title: "Registrar Producto" }} />
             </Route>
 
             {/* Admin */}
