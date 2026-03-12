@@ -7,6 +7,6 @@ export function createModelProduct(modelProduct) {
     });
 }
 
-export function getModels() {
+export function getModelProducts(id) {
     return apiRequest("/models");
 }
