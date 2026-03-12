@@ -1,0 +1,59 @@
+import { createContext, useContext, useState } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+
+const AlertContext = createContext();
+
+export function AlertProvider({ children }) {
+    const [alert, setAlert] = useState({
+        open: false,
+        message: "",
+        severity: "success",
+    });
+
+    const showAlert = (message, severity = "success") => {
+        setAlert({
+            open: true,
+            message,
+            severity,
+        });
+    };
+
+    const handleClose = () => {
+        setAlert(prev => ({ ...prev, open: false }));
+    };
+
+    return (
+        <AlertContext.Provider value={{ showAlert }}>
+            {children}
+
+            <Snackbar
+                open={alert.open}
+                autoHideDuration={4000}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                sx={{
+                    mt: 4,
+                    mr: 2,
+                }}
+            >
+                <Alert
+                    onClose={handleClose}
+                    severity={alert.severity}
+                    variant='outlined'
+                    sx={{
+                        width: "420px",
+                        bgcolor: "background.paper",
+                    }}
+                >
+                    {alert.message}
+                </Alert>
+            </Snackbar>
+        </AlertContext.Provider>
+    );
+}
+
+export const useAlert = () => useContext(AlertContext);
