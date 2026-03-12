@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Package, PlusCircle, PackagePlus } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, PackagePlus } from "lucide-react";
 
 export const menu = [
     {
@@ -14,7 +14,7 @@ export const menu = [
     {
         name: "Inventario",
         path: "/inventario",
-        icon: Package,
+        icon: Boxes,
     },
     {
         name: "Registrar Venta",
