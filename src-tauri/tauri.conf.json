@@ -14,6 +14,8 @@
       {
         "label": "main",
         "title": "Audiocare",
+        "minWidth": 900,
+        "minHeight": 600,
         "width": 1200,
         "height": 800,
         "resizable": true,
