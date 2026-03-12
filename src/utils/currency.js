@@ -1,9 +1,11 @@
 export function formatCRC(value) {
     if (!value) return "";
 
-    const number = value.toString().replace(/\D/g, "");
+    const numericValue = value.toString().replace(/\D/g, "");
 
-    return new Intl.NumberFormat("es-CR").format(number);
+    if (!numericValue) return "";
+
+    return Number(numericValue).toLocaleString("en-US");
 }
 
 export function convertCRCToEuro(value) {
@@ -14,4 +16,15 @@ export function convertCRCToEuro(value) {
 export function convertCRCToUSD(value) {
     const USD_RATE = 0.0021;
     return (value * USD_RATE).toFixed(2);
+}
+
+export function formatConvertedCurrency(value) {
+    const number = Number(value);
+
+    if (Number.isNaN(number)) return "0.00";
+
+    return number.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
 }
