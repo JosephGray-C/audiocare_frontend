@@ -16,18 +16,14 @@ export default function TitleBar() {
     }
 
     return (
-        <header className='flex items-center h-7 bg-[#0f172a] text-white select-none border-b border-slate-800'>
-            {/* DRAG REGION */}
-            <div
-                data-tauri-drag-region
-                onDoubleClick={handleDoubleClick}
-                className='flex items-center px-3 text-[12px] font-semibold flex-1 text-gray-100'
-            >
-                {title}
-            </div>
+        <header className='h-8 shrink-0 bg-[#f8f8f8] border-b border-slate-200 select-none'>
+            <div className='flex items-center h-full'>
+                <div data-tauri-drag-region onDoubleClick={handleDoubleClick} className='flex items-center flex-1 h-full px-6'>
+                    <span className='text-sm font-semibold text-slate-700'>{title}</span>
+                </div>
 
-            {/* CONTROLS */}
-            <WindowControls />
+                <WindowControls />
+            </div>
         </header>
     );
 }

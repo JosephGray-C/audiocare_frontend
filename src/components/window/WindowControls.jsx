@@ -5,50 +5,53 @@ const appWindow = getCurrentWindow();
 
 export default function WindowControls() {
     return (
-        <div className='flex h-7'>
+        <div className='flex items-center h-full pr-2'>
             <button
                 onClick={() => appWindow.minimize()}
                 className='
-                    w-11 h-7
+                    w-9 h-9
                     flex items-center justify-center
-                    text-gray-400
-                    hover:bg-[#2b2d31]
-                    hover:text-white
+                    rounded-lg
+                    text-slate-400
+                    hover:bg-slate-200
+                    hover:text-slate-700
                     transition-colors duration-150
                 '
                 aria-label='Minimizar'
             >
-                <Minus size={14} strokeWidth={1.75} />
+                <Minus size={15} strokeWidth={2} />
             </button>
 
             <button
                 onClick={() => appWindow.toggleMaximize()}
                 className='
-                    w-11 h-7
+                    w-9 h-9
                     flex items-center justify-center
-                    text-gray-400
-                    hover:bg-[#2b2d31]
-                    hover:text-white
+                    rounded-lg
+                    text-slate-400
+                    hover:bg-slate-200
+                    hover:text-slate-700
                     transition-colors duration-150
                 '
                 aria-label='Maximizar'
             >
-                <Square size={12} strokeWidth={1.75} />
+                <Square size={13} strokeWidth={2} />
             </button>
 
             <button
                 onClick={() => appWindow.close()}
                 className='
-                    w-11 h-7
+                    w-9 h-9
                     flex items-center justify-center
-                    text-gray-400
-                    hover:bg-red-600
+                    rounded-lg
+                    text-slate-400
+                    hover:bg-red-500
                     hover:text-white
                     transition-colors duration-150
                 '
                 aria-label='Cerrar'
             >
-                <X size={14} strokeWidth={1.75} />
+                <X size={15} strokeWidth={2} />
             </button>
         </div>
     );
