@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, PackagePlus } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, FolderKanban, PackagePlus } from "lucide-react";
 
 export const menu = [
     {
@@ -22,8 +22,8 @@ export const menu = [
         icon: PlusCircle,
     },
     {
-        name: "Registrar Producto",
-        path: "/registrar-producto",
-        icon: PackagePlus,
+        name: "Registrar Modelo Producto",
+        path: "/registrar-modelo-producto",
+        icon: FolderKanban,
     },
 ];

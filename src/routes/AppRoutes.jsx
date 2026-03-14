@@ -6,7 +6,7 @@ import Dashboard from "../pages/Dashboard";
 import Ventas from "../pages/Ventas";
 import Inventario from "../pages/Inventario";
 import RegistrarVenta from "../pages/RegistrarVenta";
-import RegistrarProducto from "../pages/RegistrarProducto";
+import RegistrarModeloProducto from "../pages/RegistrarModeloProducto";
 
 export default function AppRoutes() {
     return (
@@ -16,13 +16,13 @@ export default function AppRoutes() {
                 <Route path="/login" element={<Login />} />
             </Route> */}
 
-            {/* Main app */}
+            {/* Main app */} 
             <Route element={<MainLayout />}>
                 <Route path='/' element={<Dashboard />} handle={{ title: "Dashboard" }} />
                 <Route path='/ventas' element={<Ventas />} handle={{ title: "Ventas" }} />
                 <Route path='/inventario' element={<Inventario />} handle={{ title: "Inventario" }} />
                 <Route path='/registrar-venta' element={<RegistrarVenta />} handle={{ title: "Registrar Venta" }} />
-                <Route path='/registrar-producto' element={<RegistrarProducto />} handle={{ title: "Registrar Producto" }} />
+                <Route path='/registrar-modelo-producto' element={<RegistrarModeloProducto />} handle={{ title: "Registrar Modelo" }} />
             </Route>
 
             {/* Admin */}
