@@ -6,7 +6,6 @@ html {
 }
 
 /* Scrollbar del contenedor scrollable */
-
 .scroll-area::-webkit-scrollbar {
   width: 10px;
   height: 6px;
