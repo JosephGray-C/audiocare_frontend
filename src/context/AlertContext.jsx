@@ -4,6 +4,11 @@ import Alert from "@mui/material/Alert";
 
 const AlertContext = createContext();
 
+function getDuration(severity) {
+    if (severity === "error" || severity === "warning") return 5000;
+    return 3000;
+}
+
 export function AlertProvider({ children }) {
     const [alert, setAlert] = useState({
         open: false,
@@ -29,7 +34,7 @@ export function AlertProvider({ children }) {
 
             <Snackbar
                 open={alert.open}
-                autoHideDuration={4000}
+                autoHideDuration={getDuration(alert.severity)}
                 onClose={handleClose}
                 anchorOrigin={{
                     vertical: "top",

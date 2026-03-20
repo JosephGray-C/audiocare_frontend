@@ -1,15 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SidebarItem from "./SidebarItem";
 import { menu } from "../../config/menu";
 import logo from "../../assets/logo_color_AC.png";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import useWindowWidth from "../../hooks/useWindowWidth";
+import { useAuth } from "../../context/AuthContext";
 
 const AUTO_COLLAPSE_WIDTH = 980;
 
 export default function Sidebar() {
     const [manualCollapsed, setManualCollapsed] = useState(false);
     const windowWidth = useWindowWidth();
+    const { logout } = useAuth();
+    const navigate = useNavigate();
 
     const isAutoCollapsed = windowWidth < AUTO_COLLAPSE_WIDTH;
     const collapsed = isAutoCollapsed || manualCollapsed;
@@ -17,6 +21,11 @@ export default function Sidebar() {
     function handleToggle() {
         if (isAutoCollapsed) return;
         setManualCollapsed(prev => !prev);
+    }
+
+    function handleLogout() {
+        logout();
+        navigate("/login", { replace: true });
     }
 
     return (
@@ -67,6 +76,7 @@ export default function Sidebar() {
             {/* Logout */}
             <div className='border-t border-slate-200 px-4 py-5'>
                 <button
+                    onClick={handleLogout}
                     title={collapsed ? "Cerrar sesión" : ""}
                     className={`
                         flex items-center w-full rounded-xl
