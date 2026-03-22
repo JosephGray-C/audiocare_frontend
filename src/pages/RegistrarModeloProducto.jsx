@@ -7,7 +7,7 @@ import FormCardHeader from "../components/form/FormCardHeader";
 import FormCardFooter from "../components/form/FormCardFooter";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
-import { FormPageWrapper } from "../layouts/FormPageWrapper";
+import FormPageWrapper from "../layouts/FormPageWrapper";
 
 export default function RegistrarModeloProducto() {
     const [formData, setFormData] = useState({
