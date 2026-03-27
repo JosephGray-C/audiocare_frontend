@@ -1,4 +1,4 @@
-import { apiRequest } from "./apiClient";
+import { apiRequest } from "./ApiClient";
 
 // GET available products (FIFO order)
 export function getAvailableProducts() {

@@ -1,4 +1,4 @@
-import { apiRequest } from "./apiClient";
+import { apiRequest } from "./ApiClient";
 
 export function getSupplierOrders() {
     return apiRequest("/supplier-orders");

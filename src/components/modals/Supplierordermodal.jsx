@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { X, Truck, Calendar, Euro, DollarSign, ShieldCheck } from "lucide-react";
+import { X, Truck, Calendar, Euro, ShieldCheck } from "lucide-react";
 import { formatCRC, convertCRCToEuro, formatConvertedCurrency } from "../../utils/currency";
 import LoadingButton from "../ui/LoadingButton";
+import RenderField from "../form/RenderField";
 
 const INITIAL_FORM = {
     name: "",
@@ -119,45 +120,6 @@ export default function SupplierOrderModal({ open, onClose, onSubmit, loading = 
         onSubmit(payload);
     }
 
-    // ── Field renderer ───────────────────────────────────────────────────
-
-    function renderField({ name, label, icon: Icon, prefix, value, onChange, placeholder, type = "text", disabled = false }) {
-        return (
-            <div className="space-y-1.5">
-                <label htmlFor={name} className="block text-sm font-medium text-slate-600">
-                    {label}
-                </label>
-                <div
-                    className={`
-                        flex items-center w-full rounded-xl border px-3.5 py-2.5 transition-colors
-                        ${errors[name]
-                        ? "border-red-300 bg-red-50/40"
-                        : disabled
-                            ? "border-slate-200 bg-slate-50"
-                            : "border-slate-200 bg-white focus-within:border-[#34c3d6]"
-                    }
-                    `}
-                >
-                    {Icon && <Icon size={15} className={`mr-2.5 shrink-0 ${errors[name] ? "text-red-400" : "text-slate-400"}`} />}
-                    {prefix && <span className={`mr-2 shrink-0 text-sm ${errors[name] ? "text-red-400" : "text-slate-400"}`}>{prefix}</span>}
-                    <input
-                        id={name}
-                        name={name}
-                        type={type}
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                        placeholder={placeholder}
-                        className="w-full min-w-0 bg-transparent text-sm text-slate-700 placeholder:text-slate-300 outline-none disabled:text-slate-500"
-                    />
-                </div>
-                {errors[name] && (
-                    <p className="text-xs text-red-500">{errors[name]}</p>
-                )}
-            </div>
-        );
-    }
-
     if (!open) return null;
 
     return (
@@ -189,24 +151,26 @@ export default function SupplierOrderModal({ open, onClose, onSubmit, loading = 
 
                 {/* Form — scrollable */}
                 <form id="supplierOrderForm" onSubmit={handleSubmit} className="px-6 py-5 space-y-4 overflow-y-auto">
-                    {renderField({
-                        name: "name",
-                        label: "Nombre del Pedido",
-                        icon: Truck,
-                        value: formData.name,
-                        onChange: handleChange,
-                        placeholder: "Ej: Pedido Europeo Q1 2026",
-                    })}
+                    <RenderField
+                        name="name"
+                        label="Nombre del Pedido"
+                        icon={Truck}
+                        value={formData.name}
+                        onChange={handleChange}
+                        error={errors.name}
+                        placeholder="Ej: Pedido Europeo Q1 2026"
+                    />
 
-                    {renderField({
-                        name: "receivedDate",
-                        label: "Fecha de Recepción",
-                        icon: Calendar,
-                        type: "date",
-                        value: formData.receivedDate,
-                        onChange: handleChange,
-                        placeholder: "Seleccione fecha",
-                    })}
+                    <RenderField
+                        name="receivedDate"
+                        label="Fecha de Recepción"
+                        icon={Calendar}
+                        type="date"
+                        value={formData.receivedDate}
+                        onChange={handleChange}
+                        error={errors.receivedDate}
+                        placeholder="Seleccione fecha"
+                    />
 
                     {/* Separator */}
                     <div className="flex items-center gap-3 pt-1">
@@ -216,25 +180,27 @@ export default function SupplierOrderModal({ open, onClose, onSubmit, loading = 
                     </div>
 
                     {/* Total amount CRC */}
-                    {renderField({
-                        name: "totalAmountCrc",
-                        label: "Monto Total (₡)",
-                        prefix: "₡",
-                        value: formattedTotalCrc,
-                        onChange: handlePositiveIntegerChange,
-                        placeholder: "Colones",
-                    })}
+                    <RenderField
+                        name="totalAmountCrc"
+                        label="Monto Total (₡)"
+                        prefix="₡"
+                        value={formattedTotalCrc}
+                        onChange={handlePositiveIntegerChange}
+                        error={errors.totalAmountCrc}
+                        placeholder="Colones"
+                    />
 
                     {/* Total amount EUR — auto-calculated */}
-                    {renderField({
-                        name: "totalAmountEur",
-                        label: "Monto Total (€)",
-                        icon: Euro,
-                        value: computedTotalEur,
-                        onChange: () => {},
-                        placeholder: "Calculado automáticamente",
-                        disabled: true,
-                    })}
+                    <RenderField
+                        name="totalAmountEur"
+                        label="Monto Total (€)"
+                        icon={Euro}
+                        value={computedTotalEur}
+                        onChange={() => {}}
+                        error={errors.totalAmountEur}
+                        placeholder="Calculado automáticamente"
+                        disabled
+                    />
 
                     {/* Separator */}
                     <div className="flex items-center gap-3 pt-1">
@@ -244,25 +210,27 @@ export default function SupplierOrderModal({ open, onClose, onSubmit, loading = 
                     </div>
 
                     {/* Insurance CRC */}
-                    {renderField({
-                        name: "insuranceCrc",
-                        label: "Seguro (₡)",
-                        icon: ShieldCheck,
-                        value: formattedInsuranceCrc,
-                        onChange: handlePositiveIntegerChange,
-                        placeholder: "0 si no aplica",
-                    })}
+                    <RenderField
+                        name="insuranceCrc"
+                        label="Seguro (₡)"
+                        icon={ShieldCheck}
+                        value={formattedInsuranceCrc}
+                        onChange={handlePositiveIntegerChange}
+                        error={errors.insuranceCrc}
+                        placeholder="0 si no aplica"
+                    />
 
                     {/* Insurance EUR — auto-calculated */}
-                    {renderField({
-                        name: "insuranceEur",
-                        label: "Seguro (€)",
-                        icon: Euro,
-                        value: computedInsuranceEur,
-                        onChange: () => {},
-                        placeholder: "Calculado automáticamente",
-                        disabled: true,
-                    })}
+                    <RenderField
+                        name="insuranceEur"
+                        label="Seguro (€)"
+                        icon={Euro}
+                        value={computedInsuranceEur}
+                        onChange={() => {}}
+                        error={errors.insuranceEur}
+                        placeholder="Calculado automáticamente"
+                        disabled
+                    />
                 </form>
 
                 {/* Footer */}

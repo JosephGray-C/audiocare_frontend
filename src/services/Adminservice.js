@@ -1,4 +1,4 @@
-import { apiRequest } from "./apiClient";
+import { apiRequest } from "./ApiClient";
 
 export function createAdmin(admin) {
     return apiRequest("/admins", {

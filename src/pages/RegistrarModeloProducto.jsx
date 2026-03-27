@@ -1,7 +1,7 @@
 import { Package, Barcode, Euro, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { formatCRC, convertCRCToEuro, convertCRCToUSD, formatConvertedCurrency} from "../utils/currency";
-import { createModelProduct } from "../services/modelProductService";
+// import { createModelProduct } from "../services/ModelProductService";
 import FormField from "../components/form/FormField";
 import FormCardHeader from "../components/form/FormCardHeader";
 import FormCardFooter from "../components/form/FormCardFooter";

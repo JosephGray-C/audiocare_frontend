@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Package, Barcode, Euro, DollarSign } from "lucide-react";
 import { formatCRC, convertCRCToEuro, convertCRCToUSD, formatConvertedCurrency } from "../../utils/currency";
 import LoadingButton from "../ui/LoadingButton";
+import RenderField from "../form/RenderField";
 
 const INITIAL_FORM = {
     modelCode: "",
@@ -118,45 +119,6 @@ export default function ModelProductModal({ open, onClose, onSubmit, loading = f
         onSubmit(payload);
     }
 
-    // ── Reusable field renderer ──────────────────────────────────────────
-
-    function renderField({ name, label, icon: Icon, prefix, value, onChange, placeholder, disabled = false }) {
-        return (
-            <div className="space-y-1.5">
-                <label htmlFor={name} className="block text-sm font-medium text-slate-600">
-                    {label}
-                </label>
-                <div
-                    className={`
-                        flex items-center w-full rounded-xl border px-3.5 py-2.5 transition-colors
-                        ${errors[name]
-                        ? "border-red-300 bg-red-50/40"
-                        : disabled
-                            ? "border-slate-200 bg-slate-50"
-                            : "border-slate-200 bg-white focus-within:border-[#34c3d6]"
-                    }
-                    `}
-                >
-                    {Icon && <Icon size={15} className={`mr-2.5 shrink-0 ${errors[name] ? "text-red-400" : "text-slate-400"}`} />}
-                    {prefix && <span className={`mr-2 shrink-0 text-sm ${errors[name] ? "text-red-400" : "text-slate-400"}`}>{prefix}</span>}
-                    <input
-                        id={name}
-                        name={name}
-                        type="text"
-                        value={value}
-                        onChange={onChange}
-                        disabled={disabled}
-                        placeholder={placeholder}
-                        className="w-full min-w-0 bg-transparent text-sm text-slate-700 placeholder:text-slate-300 outline-none disabled:text-slate-500"
-                    />
-                </div>
-                {errors[name] && (
-                    <p className="text-xs text-red-500">{errors[name]}</p>
-                )}
-            </div>
-        );
-    }
-
     if (!open) return null;
 
     return (
@@ -188,51 +150,56 @@ export default function ModelProductModal({ open, onClose, onSubmit, loading = f
 
                 {/* Form */}
                 <form id="modelForm" onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
-                    {renderField({
-                        name: "modelCode",
-                        label: "Código Modelo",
-                        icon: Barcode,
-                        value: formData.modelCode,
-                        onChange: handlePositiveIntegerChange,
-                        placeholder: "Ej: 1001",
-                    })}
+                    <RenderField
+                        name="modelCode"
+                        label="Código Modelo"
+                        icon={Barcode}
+                        value={formData.modelCode}
+                        onChange={handlePositiveIntegerChange}
+                        error={errors.modelCode}
+                        placeholder="Ej: 1001"
+                    />
 
-                    {renderField({
-                        name: "name",
-                        label: "Nombre",
-                        icon: Package,
-                        value: formData.name,
-                        onChange: handleChange,
-                        placeholder: "Nombre del modelo",
-                    })}
+                    <RenderField
+                        name="name"
+                        label="Nombre"
+                        icon={Package}
+                        value={formData.name}
+                        onChange={handleChange}
+                        error={errors.name}
+                        placeholder="Nombre del modelo"
+                    />
 
-                    {renderField({
-                        name: "costFabricCrc",
-                        label: "Precio Fábrica (₡)",
-                        prefix: "₡",
-                        value: formattedCostFabricCrc,
-                        onChange: handlePositiveIntegerChange,
-                        placeholder: "Colones",
-                    })}
+                    <RenderField
+                        name="costFabricCrc"
+                        label="Precio Fábrica (₡)"
+                        prefix="₡"
+                        value={formattedCostFabricCrc}
+                        onChange={handlePositiveIntegerChange}
+                        error={errors.costFabricCrc}
+                        placeholder="Colones"
+                    />
 
-                    {renderField({
-                        name: "costFabricEur",
-                        label: "Precio Fábrica (€)",
-                        icon: Euro,
-                        value: formattedCostFabricEur,
-                        onChange: () => {},
-                        placeholder: "Calculado automáticamente",
-                        disabled: true,
-                    })}
+                    <RenderField
+                        name="costFabricEur"
+                        label="Precio Fábrica (€)"
+                        icon={Euro}
+                        value={formattedCostFabricEur}
+                        onChange={() => {}}
+                        error={errors.costFabricEur}
+                        placeholder="Calculado automáticamente"
+                        disabled
+                    />
 
-                    {renderField({
-                        name: "priceSale",
-                        label: "Precio Venta (₡)",
-                        prefix: "₡",
-                        value: formattedPriceSale,
-                        onChange: handlePositiveIntegerChange,
-                        placeholder: "Colones",
-                    })}
+                    <RenderField
+                        name="priceSale"
+                        label="Precio Venta (₡)"
+                        prefix="₡"
+                        value={formattedPriceSale}
+                        onChange={handlePositiveIntegerChange}
+                        error={errors.priceSale}
+                        placeholder="Colones"
+                    />
 
                     {/* Currency conversions */}
                     <div className="flex items-center gap-5 rounded-xl px-4 py-2.5 border bg-slate-50 border-slate-200 w-fit">

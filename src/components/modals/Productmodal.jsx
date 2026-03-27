@@ -4,6 +4,7 @@ import { getModelProducts } from "../../services/modelProductService";
 import { getSupplierOrders } from "../../services/supplierOrderService";
 import SearchableSelect from "../ui/SearchableSelect";
 import LoadingButton from "../ui/LoadingButton";
+import RenderField from "../form/RenderField";
 
 const INITIAL_FORM = {
     serialNum: "",
@@ -138,41 +139,6 @@ export default function ProductModal({ open, onClose, onSubmit, loading = false,
         });
     }
 
-    // ── Field renderer ───────────────────────────────────────────────────
-
-    function renderField({ name, label, icon: Icon, value, onChange, placeholder, type = "text" }) {
-        return (
-            <div className="space-y-1.5">
-                <label htmlFor={name} className="block text-sm font-medium text-slate-600">
-                    {label}
-                </label>
-                <div
-                    className={`
-                        flex items-center w-full rounded-xl border px-3.5 py-2.5 transition-colors
-                        ${errors[name]
-                        ? "border-red-300 bg-red-50/40"
-                        : "border-slate-200 bg-white focus-within:border-[#34c3d6]"
-                    }
-                    `}
-                >
-                    {Icon && <Icon size={15} className={`mr-2.5 shrink-0 ${errors[name] ? "text-red-400" : "text-slate-400"}`} />}
-                    <input
-                        id={name}
-                        name={name}
-                        type={type}
-                        value={value}
-                        onChange={onChange}
-                        placeholder={placeholder}
-                        className="w-full min-w-0 bg-transparent text-sm text-slate-700 placeholder:text-slate-300 outline-none"
-                    />
-                </div>
-                {errors[name] && (
-                    <p className="text-xs text-red-500">{errors[name]}</p>
-                )}
-            </div>
-        );
-    }
-
     function renderSelectField({ name, label, icon, options, placeholder, searchPlaceholder }) {
         return (
             <div className="space-y-1.5">
@@ -227,14 +193,15 @@ export default function ProductModal({ open, onClose, onSubmit, loading = false,
 
                 {/* Form */}
                 <form id="productForm" onSubmit={handleSubmit} className="px-6 py-5 space-y-4 overflow-y-auto">
-                    {renderField({
-                        name: "serialNum",
-                        label: "Número de Serie",
-                        icon: Hash,
-                        value: formData.serialNum,
-                        onChange: handleChange,
-                        placeholder: "Ej: SER-001-2026",
-                    })}
+                    <RenderField
+                        name="serialNum"
+                        label="Número de Serie"
+                        icon={Hash}
+                        value={formData.serialNum}
+                        onChange={handleChange}
+                        error={errors.serialNum}
+                        placeholder="Ej: SER-001-2026"
+                    />
 
                     {renderSelectField({
                         name: "modelId",
@@ -254,15 +221,16 @@ export default function ProductModal({ open, onClose, onSubmit, loading = false,
                         searchPlaceholder: "Buscar por nombre...",
                     })}
 
-                    {renderField({
-                        name: "entryDate",
-                        label: "Fecha de Ingreso",
-                        icon: Calendar,
-                        type: "date",
-                        value: formData.entryDate,
-                        onChange: handleChange,
-                        placeholder: "Seleccione fecha",
-                    })}
+                    <RenderField
+                        name="entryDate"
+                        label="Fecha de Ingreso"
+                        icon={Calendar}
+                        type="date"
+                        value={formData.entryDate}
+                        onChange={handleChange}
+                        error={errors.entryDate}
+                        placeholder="Seleccione fecha"
+                    />
 
                     {/* Info note */}
                     <div className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">

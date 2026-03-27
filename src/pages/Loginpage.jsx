@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, Headphones, User, IdCard, UserPlus, LogIn } from "lucide-react";
-import { login } from "../services/authService";
+import { Mail, Lock, Headphones, User, IdCard, UserPlus, LogIn } from "lucide-react";
+import { login } from "../services/Authservice";
 import { createAdmin } from "../services/adminService";
 import { useAuth } from "../context/AuthContext";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
 import LoadingButton from "../components/ui/LoadingButton";
+import RenderField from "../components/form/RenderField";
 
 // ─── DEV MODE ────────────────────────────────────────────────────────────
 // Set to false (or remove the register UI entirely) before production.
@@ -31,7 +32,6 @@ export default function LoginPage() {
     const [registerData, setRegisterData] = useState(REGISTER_INITIAL);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
 
     const { saveLogin } = useAuth();
     const { showAlert } = useAlert();
@@ -49,7 +49,6 @@ export default function LoginPage() {
     function toggleMode() {
         setIsRegister(prev => !prev);
         setErrors({});
-        setShowPassword(false);
     }
 
     // ── Validation ───────────────────────────────────────────────────────
@@ -124,60 +123,6 @@ export default function LoginPage() {
         } finally {
             setLoading(false);
         }
-    }
-
-    // ── Reusable input renderer ──────────────────────────────────────────
-
-    function renderField({ name, label, type = "text", icon: Icon, placeholder, autoComplete }) {
-        const isPasswordField = type === "password";
-        const inputType = isPasswordField ? (showPassword ? "text" : "password") : type;
-
-        return (
-            <div className="space-y-1.5">
-                <label htmlFor={name} className="block text-sm font-medium text-slate-600">
-                    {label}
-                </label>
-                <div className="relative">
-                    {Icon && (
-                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <Icon size={16} className={errors[name] ? "text-red-400" : "text-slate-400"} />
-                        </div>
-                    )}
-                    <input
-                        id={name}
-                        name={name}
-                        type={inputType}
-                        autoComplete={autoComplete}
-                        value={formData[name]}
-                        onChange={handleChange}
-                        placeholder={placeholder}
-                        className={`
-                            w-full ${Icon ? "pl-10" : "pl-4"} ${isPasswordField ? "pr-11" : "pr-4"} py-2.5 rounded-xl
-                            border text-sm text-slate-700
-                            placeholder:text-slate-300
-                            outline-none transition-colors
-                            ${errors[name]
-                            ? "border-red-300 focus:border-red-400 bg-red-50/40"
-                            : "border-slate-200 focus:border-[#34c3d6] bg-white"
-                        }
-                        `}
-                    />
-                    {isPasswordField && (
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(prev => !prev)}
-                            tabIndex={-1}
-                            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                        </button>
-                    )}
-                </div>
-                {errors[name] && (
-                    <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
-                )}
-            </div>
-        );
     }
 
     // ── Render ────────────────────────────────────────────────────────────
@@ -287,53 +232,70 @@ export default function LoginPage() {
                         >
                             {isRegister ? (
                                 <>
-                                    {renderField({
-                                        name: "identityNumber",
-                                        label: "Número de identidad",
-                                        icon: IdCard,
-                                        placeholder: "Ej: 123456789",
-                                    })}
-
-                                    {renderField({
-                                        name: "name",
-                                        label: "Nombre",
-                                        icon: User,
-                                        placeholder: "Ingrese su nombre",
-                                        autoComplete: "given-name",
-                                    })}
+                                    <RenderField
+                                        name="identityNumber"
+                                        label="Número de identidad"
+                                        icon={IdCard}
+                                        value={formData.identityNumber}
+                                        onChange={handleChange}
+                                        error={errors.identityNumber}
+                                        placeholder="Ej: 123456789"
+                                    />
+                                    <RenderField
+                                        name="name"
+                                        label="Nombre"
+                                        icon={User}
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        error={errors.name}
+                                        placeholder="Ingrese su nombre"
+                                        autoComplete="given-name"
+                                    />
 
                                     {/* Apellidos en una fila */}
                                     <div className="grid grid-cols-2 gap-3">
-                                        {renderField({
-                                            name: "lastName1",
-                                            label: "Primer apellido",
-                                            placeholder: "Apellido 1",
-                                            autoComplete: "family-name",
-                                        })}
-                                        {renderField({
-                                            name: "lastName2",
-                                            label: "Segundo apellido",
-                                            placeholder: "Apellido 2",
-                                        })}
+                                        <RenderField
+                                            name="lastName1"
+                                            label="Primer apellido"
+                                            value={formData.lastName1}
+                                            onChange={handleChange}
+                                            error={errors.lastName1}
+                                            placeholder="Apellido 1"
+                                            autoComplete="family-name"
+                                        />
+                                        <RenderField
+                                            name="lastName2"
+                                            label="Segundo apellido"
+                                            value={formData.lastName2}
+                                            onChange={handleChange}
+                                            error={errors.lastName2}
+                                            placeholder="Apellido 2"
+                                        />
                                     </div>
 
-                                    {renderField({
-                                        name: "email",
-                                        label: "Correo electrónico",
-                                        type: "email",
-                                        icon: Mail,
-                                        placeholder: "admin@audiocare.com",
-                                        autoComplete: "email",
-                                    })}
+                                    <RenderField
+                                        name="email"
+                                        label="Correo electrónico"
+                                        type="email"
+                                        icon={Mail}
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        error={errors.email}
+                                        placeholder="admin@audiocare.com"
+                                        autoComplete="email"
+                                    />
 
-                                    {renderField({
-                                        name: "password",
-                                        label: "Contraseña",
-                                        type: "password",
-                                        icon: Lock,
-                                        placeholder: "Mínimo 8 caracteres",
-                                        autoComplete: "new-password",
-                                    })}
+                                    <RenderField
+                                        name="password"
+                                        label="Contraseña"
+                                        type="password"
+                                        icon={Lock}
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        error={errors.password}
+                                        placeholder="Mínimo 8 caracteres"
+                                        autoComplete="new-password"
+                                    />
 
                                     {/* isMaster toggle */}
                                     <div className="flex items-center gap-3 pt-1">
@@ -365,23 +327,29 @@ export default function LoginPage() {
                                 </>
                             ) : (
                                 <>
-                                    {renderField({
-                                        name: "email",
-                                        label: "Correo electrónico",
-                                        type: "email",
-                                        icon: Mail,
-                                        placeholder: "admin@audiocare.com",
-                                        autoComplete: "email",
-                                    })}
+                                    <RenderField
+                                        name="email"
+                                        label="Correo electrónico"
+                                        type="email"
+                                        icon={Mail}
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        error={errors.email}
+                                        placeholder="admin@audiocare.com"
+                                        autoComplete="email"
+                                    />
 
-                                    {renderField({
-                                        name: "password",
-                                        label: "Contraseña",
-                                        type: "password",
-                                        icon: Lock,
-                                        placeholder: "••••••••",
-                                        autoComplete: "current-password",
-                                    })}
+                                    <RenderField
+                                        name="password"
+                                        label="Contraseña"
+                                        type="password"
+                                        icon={Lock}
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        error={errors.password}
+                                        placeholder="••••••••"
+                                        autoComplete="current-password"
+                                    />
                                 </>
                             )}
 

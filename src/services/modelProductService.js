@@ -1,4 +1,4 @@
-import { apiRequest } from "./apiClient";
+import { apiRequest } from "./ApiClient";
 
 export function getModelProducts() {
     return apiRequest("/models");

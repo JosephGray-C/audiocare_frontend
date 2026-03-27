@@ -1,4 +1,15 @@
-export default function FormField({ label, icon: Icon, prefix, name, value, onChange, placeholder, type = "text", error, disabled }) {
+export default function FormField({ 
+    name, 
+    label, 
+    type = "text", 
+    icon: Icon, 
+    placeholder, 
+    value, 
+    prefix, 
+    onChange, 
+    error, 
+    disabled 
+}) {
     return (
         <>
             <div className='grid grid-cols-1 gap-3 lg:grid-cols-[180px_1fr] lg:items-center lg:gap-6'>
