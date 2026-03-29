@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, Package, Truck, Hash } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, Package, Truck, Hash, Users } from "lucide-react";
 
 export const menu = [
     {
@@ -35,5 +35,10 @@ export const menu = [
         name: "Productos",
         path: "/productos",
         icon: Hash,
+    },
+    {
+        name: "Clientes",
+        path: "/clientes",
+        icon: Users,
     },
 ];

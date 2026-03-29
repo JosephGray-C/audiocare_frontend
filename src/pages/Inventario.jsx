@@ -123,6 +123,7 @@ export default function Inventario() {
     const totalAvailable = groupedModels.reduce((sum, g) => sum + g.availableCount, 0);
     const totalBilled = groupedModels.reduce((sum, g) => sum + g.billedCount, 0);
     const totalProducts = groupedModels.reduce((sum, g) => sum + g.totalCount, 0);
+    const modelsInStock = groupedModels.filter(g => g.availableCount > 0).length;
 
     // ── Toggle expand ────────────────────────────────────────────────────
 
@@ -169,7 +170,7 @@ export default function Inventario() {
 
             {/* Summary cards */}
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                <SummaryCard label="Modelos en stock" value={groupedModels.length} color="#34c3d6" />
+                <SummaryCard label="Modelos en stock" value={modelsInStock} color="#34c3d6" />
                 <SummaryCard label="Unidades disponibles" value={totalAvailable} color="#22c55e" />
                 <SummaryCard label="Unidades facturadas" value={totalBilled} color="#3b82f6" />
                 <SummaryCard label="Total unidades" value={totalProducts} color="#64748b" />

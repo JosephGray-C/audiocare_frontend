@@ -110,26 +110,24 @@ export default function SearchableSelect({
 
             {/* Dropdown */}
             {open && (
-                <div className="absolute z-50 mt-1 w-full bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden">
-                    {/* Search input */}
-                    {options.length > 5 && (
-                        <div className="px-3 pt-3 pb-2">
-                            <div className="relative">
-                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                <input
-                                    ref={searchRef}
-                                    type="text"
-                                    value={search}
-                                    onChange={e => setSearch(e.target.value)}
-                                    placeholder={searchPlaceholder}
-                                    className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 placeholder:text-slate-300 outline-none focus:border-[#34c3d6]"
-                                />
-                            </div>
+                <div className="absolute z-[200] mt-1 w-full bg-white rounded-xl border border-slate-200 shadow-lg">
+                    {/* Search input — always visible */}
+                    <div className="px-3 pt-3 pb-2">
+                        <div className="relative">
+                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                ref={searchRef}
+                                type="text"
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                                placeholder={searchPlaceholder}
+                                className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 placeholder:text-slate-300 outline-none focus:border-[#34c3d6]"
+                            />
                         </div>
-                    )}
+                    </div>
 
                     {/* Options list */}
-                    <div className="max-h-48 overflow-y-auto">
+                    <div className="max-h-60 overflow-y-auto rounded-b-xl">
                         {filtered.length === 0 ? (
                             <div className="px-4 py-3 text-sm text-slate-400 text-center">
                                 Sin resultados
