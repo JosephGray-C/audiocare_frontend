@@ -5,6 +5,7 @@ import { getModelProducts } from "../services/modelProductService";
 import { getSupplierOrders } from "../services/supplierOrderService";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
+import usePermissions from "../hooks/usePermissions";
 import ProductModal from "../components/modals/ProductModal";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
@@ -44,6 +45,8 @@ export default function Productos() {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const { canWrite } = usePermissions();
+    const hasWriteAccess = canWrite("products");
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -197,18 +200,20 @@ export default function Productos() {
                     </div>
                 </div>
 
-                <button
-                    onClick={handleOpenCreate}
-                    className="
-                        flex items-center gap-2 px-5 py-2.5 rounded-xl
-                        bg-[#34c3d6] text-white text-sm font-semibold
-                        hover:bg-[#28b4c8] transition-colors
-                        self-start sm:self-auto
-                    "
-                >
-                    <Plus size={16} />
-                    Nuevo Producto
-                </button>
+                {hasWriteAccess && (
+                    <button
+                        onClick={handleOpenCreate}
+                        className="
+                            flex items-center gap-2 px-5 py-2.5 rounded-xl
+                            bg-[#34c3d6] text-white text-sm font-semibold
+                            hover:bg-[#28b4c8] transition-colors
+                            self-start sm:self-auto
+                        "
+                    >
+                        <Plus size={16} />
+                        Nuevo Producto
+                    </button>
+                )}
             </div>
 
             {/* Filters bar + table */}
@@ -373,34 +378,36 @@ export default function Productos() {
                                             </span>
                                     </td>
                                     <td className="px-5 py-3.5">
-                                        <div className="flex items-center justify-center gap-1">
-                                            <button
-                                                onClick={() => handleOpenEdit(product)}
-                                                title={product.status === "BILLED" ? "No editable (facturado)" : "Editar"}
-                                                className={`
-                                                        w-8 h-8 flex items-center justify-center rounded-lg transition-colors
-                                                        ${product.status === "BILLED"
-                                                    ? "text-slate-300 cursor-not-allowed"
-                                                    : "text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6]"
-                                                }
-                                                    `}
-                                            >
-                                                <Pencil size={14} />
-                                            </button>
-                                            <button
-                                                onClick={() => handleOpenDelete(product)}
-                                                title={product.status === "BILLED" ? "No eliminable (facturado)" : "Eliminar"}
-                                                className={`
-                                                        w-8 h-8 flex items-center justify-center rounded-lg transition-colors
-                                                        ${product.status === "BILLED"
-                                                    ? "text-slate-300 cursor-not-allowed"
-                                                    : "text-slate-400 hover:bg-red-50 hover:text-red-500"
-                                                }
-                                                    `}
-                                            >
-                                                <Trash2 size={14} />
-                                            </button>
-                                        </div>
+                                        {hasWriteAccess && (
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button
+                                                    onClick={() => handleOpenEdit(product)}
+                                                    title={product.status === "BILLED" ? "No editable (facturado)" : "Editar"}
+                                                    className={`
+                                                            w-8 h-8 flex items-center justify-center rounded-lg transition-colors
+                                                            ${product.status === "BILLED"
+                                                        ? "text-slate-300 cursor-not-allowed"
+                                                        : "text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6]"
+                                                    }
+                                                        `}
+                                                >
+                                                    <Pencil size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleOpenDelete(product)}
+                                                    title={product.status === "BILLED" ? "No eliminable (facturado)" : "Eliminar"}
+                                                    className={`
+                                                            w-8 h-8 flex items-center justify-center rounded-lg transition-colors
+                                                            ${product.status === "BILLED"
+                                                        ? "text-slate-300 cursor-not-allowed"
+                                                        : "text-slate-400 hover:bg-red-50 hover:text-red-500"
+                                                    }
+                                                        `}
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))

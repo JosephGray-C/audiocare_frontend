@@ -4,6 +4,7 @@ import { getModelProducts, createModelProduct, updateModelProduct, deleteModelPr
 import { convertCRCToEuro, formatCRC, formatConvertedCurrency, convertCRCToEuro as toEur } from "../utils/currency";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
+import usePermissions from "../hooks/usePermissions";
 import ModelProductModal from "../components/modals/ModelProductModal";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
@@ -35,6 +36,8 @@ export default function ModelosProducto() {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const { canWrite } = usePermissions();
+    const hasWriteAccess = canWrite("models");
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -159,18 +162,20 @@ export default function ModelosProducto() {
                     </div>
                 </div>
 
-                <button
-                    onClick={handleOpenCreate}
-                    className="
-                        flex items-center gap-2 px-5 py-2.5 rounded-xl
-                        bg-[#34c3d6] text-white text-sm font-semibold
-                        hover:bg-[#28b4c8] transition-colors
-                        self-start sm:self-auto
-                    "
-                >
-                    <Plus size={16} />
-                    Nuevo Modelo
-                </button>
+                {hasWriteAccess && (
+                    <button
+                        onClick={handleOpenCreate}
+                        className="
+                            flex items-center gap-2 px-5 py-2.5 rounded-xl
+                            bg-[#34c3d6] text-white text-sm font-semibold
+                            hover:bg-[#28b4c8] transition-colors
+                            self-start sm:self-auto
+                        "
+                    >
+                        <Plus size={16} />
+                        Nuevo Modelo
+                    </button>
+                )}
             </div>
 
             {/* Filters bar */}
@@ -282,22 +287,24 @@ export default function ModelosProducto() {
                                             </span>
                                     </td>
                                     <td className="px-5 py-3.5">
-                                        <div className="flex items-center justify-center gap-1">
-                                            <button
-                                                onClick={() => handleOpenEdit(model)}
-                                                title="Editar"
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors"
-                                            >
-                                                <Pencil size={14} />
-                                            </button>
-                                            <button
-                                                onClick={() => handleOpenDelete(model)}
-                                                title="Eliminar"
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                                            >
-                                                <Trash2 size={14} />
-                                            </button>
-                                        </div>
+                                        {hasWriteAccess && (
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button
+                                                    onClick={() => handleOpenEdit(model)}
+                                                    title="Editar"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors"
+                                                >
+                                                    <Pencil size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleOpenDelete(model)}
+                                                    title="Eliminar"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))

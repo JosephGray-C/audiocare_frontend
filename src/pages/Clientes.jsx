@@ -3,6 +3,7 @@ import { Users, Plus, Search, Filter, Pencil, Trash2, Loader2 } from "lucide-rea
 import { getClients, createClient, updateClient, deleteClient } from "../services/clientService";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
+import usePermissions from "../hooks/usePermissions";
 import ClientModal from "../components/modals/ClientModal";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
@@ -34,6 +35,8 @@ export default function Clientes() {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const { canWrite } = usePermissions();
+    const hasWriteAccess = canWrite("clients");
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -163,18 +166,20 @@ export default function Clientes() {
                     </div>
                 </div>
 
-                <button
-                    onClick={handleOpenCreate}
-                    className="
-                        flex items-center gap-2 px-5 py-2.5 rounded-xl
-                        bg-[#34c3d6] text-white text-sm font-semibold
-                        hover:bg-[#28b4c8] transition-colors
-                        self-start sm:self-auto
-                    "
-                >
-                    <Plus size={16} />
-                    Nuevo Cliente
-                </button>
+                {hasWriteAccess && (
+                    <button
+                        onClick={handleOpenCreate}
+                        className="
+                            flex items-center gap-2 px-5 py-2.5 rounded-xl
+                            bg-[#34c3d6] text-white text-sm font-semibold
+                            hover:bg-[#28b4c8] transition-colors
+                            self-start sm:self-auto
+                        "
+                    >
+                        <Plus size={16} />
+                        Nuevo Cliente
+                    </button>
+                )}
             </div>
 
             {/* Filters bar + table */}
@@ -282,22 +287,24 @@ export default function Clientes() {
                                             </span>
                                     </td>
                                     <td className="px-5 py-3.5">
-                                        <div className="flex items-center justify-center gap-1">
-                                            <button
-                                                onClick={() => handleOpenEdit(client)}
-                                                title="Editar"
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors"
-                                            >
-                                                <Pencil size={14} />
-                                            </button>
-                                            <button
-                                                onClick={() => handleOpenDelete(client)}
-                                                title="Eliminar"
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                                            >
-                                                <Trash2 size={14} />
-                                            </button>
-                                        </div>
+                                        {hasWriteAccess && (
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button
+                                                    onClick={() => handleOpenEdit(client)}
+                                                    title="Editar"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors"
+                                                >
+                                                    <Pencil size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleOpenDelete(client)}
+                                                    title="Eliminar"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))

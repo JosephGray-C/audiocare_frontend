@@ -3,6 +3,7 @@ import { Truck, Plus, Search, Calendar, Pencil, Loader2 } from "lucide-react";
 import { getSupplierOrders, createSupplierOrder, updateSupplierOrder } from "../services/supplierOrderService";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
+import usePermissions from "../hooks/usePermissions";
 import SupplierOrderModal from "../components/modals/SupplierOrderModal";
 
 export default function PedidosProveedor() {
@@ -19,6 +20,8 @@ export default function PedidosProveedor() {
     const [modalLoading, setModalLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const { canWrite } = usePermissions();
+    const hasWriteAccess = canWrite("supplierOrders");
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -135,18 +138,20 @@ export default function PedidosProveedor() {
                     </div>
                 </div>
 
-                <button
-                    onClick={handleOpenCreate}
-                    className="
-                        flex items-center gap-2 px-5 py-2.5 rounded-xl
-                        bg-[#34c3d6] text-white text-sm font-semibold
-                        hover:bg-[#28b4c8] transition-colors
-                        self-start sm:self-auto
-                    "
-                >
-                    <Plus size={16} />
-                    Nuevo Pedido
-                </button>
+                {hasWriteAccess && (
+                    <button
+                        onClick={handleOpenCreate}
+                        className="
+                            flex items-center gap-2 px-5 py-2.5 rounded-xl
+                            bg-[#34c3d6] text-white text-sm font-semibold
+                            hover:bg-[#28b4c8] transition-colors
+                            self-start sm:self-auto
+                        "
+                    >
+                        <Plus size={16} />
+                        Nuevo Pedido
+                    </button>
+                )}
             </div>
 
             {/* Filters bar + table */}
@@ -269,15 +274,17 @@ export default function PedidosProveedor() {
                                             </span>
                                     </td>
                                     <td className="px-5 py-3.5">
-                                        <div className="flex items-center justify-center">
-                                            <button
-                                                onClick={() => handleOpenEdit(order)}
-                                                title="Editar"
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors"
-                                            >
-                                                <Pencil size={14} />
-                                            </button>
-                                        </div>
+                                        {hasWriteAccess && (
+                                            <div className="flex items-center justify-center">
+                                                <button
+                                                    onClick={() => handleOpenEdit(order)}
+                                                    title="Editar"
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors"
+                                                >
+                                                    <Pencil size={14} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))

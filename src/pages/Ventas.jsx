@@ -7,6 +7,7 @@ import {
 import { getOrders, updateOrderStatus, cancelOrder, deleteOrder } from "../services/orderClientService";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
+import usePermissions from "../hooks/usePermissions";
 import DeleteConfirmModal from "../components/modals/DeleteConfirmModal";
 
 const STATUS_LABELS = {
@@ -49,6 +50,8 @@ export default function Ventas() {
     const [actionLoading, setActionLoading] = useState(null);
 
     const { showAlert } = useAlert();
+    const { canWrite } = usePermissions();
+    const hasWriteAccess = canWrite("sales");
     const navigate = useNavigate();
 
     // ── Fetch ────────────────────────────────────────────────────────────
@@ -204,18 +207,20 @@ export default function Ventas() {
                     </div>
                 </div>
 
-                <button
-                    onClick={() => navigate("/registrar-venta")}
-                    className="
-                        flex items-center gap-2 px-5 py-2.5 rounded-xl
-                        bg-[#34c3d6] text-white text-sm font-semibold
-                        hover:bg-[#28b4c8] transition-colors
-                        self-start sm:self-auto
-                    "
-                >
-                    <Plus size={16} />
-                    Nueva Venta
-                </button>
+                {hasWriteAccess && (
+                    <button
+                        onClick={() => navigate("/registrar-venta")}
+                        className="
+                            flex items-center gap-2 px-5 py-2.5 rounded-xl
+                            bg-[#34c3d6] text-white text-sm font-semibold
+                            hover:bg-[#28b4c8] transition-colors
+                            self-start sm:self-auto
+                        "
+                    >
+                        <Plus size={16} />
+                        Nueva Venta
+                    </button>
+                )}
             </div>
 
             {/* Table card */}
@@ -357,46 +362,48 @@ export default function Ventas() {
                                                 </span>
                                         </td>
                                         <td className="px-5 py-3.5">
-                                            <div className="flex items-center justify-center gap-1">
-                                                {isLoading ? (
-                                                    <Loader2 size={16} className="animate-spin text-slate-400" />
-                                                ) : (
-                                                    <>
-                                                        {/* Advance status */}
-                                                        {nextStatus && (
-                                                            <button
-                                                                onClick={() => handleStatusChange(order.id, nextStatus)}
-                                                                title={`Avanzar a ${STATUS_LABELS[nextStatus]}`}
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                                                            >
-                                                                <ArrowRightCircle size={15} />
-                                                            </button>
-                                                        )}
+                                            {hasWriteAccess ? (
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {isLoading ? (
+                                                        <Loader2 size={16} className="animate-spin text-slate-400" />
+                                                    ) : (
+                                                        <>
+                                                            {/* Advance status */}
+                                                            {nextStatus && (
+                                                                <button
+                                                                    onClick={() => handleStatusChange(order.id, nextStatus)}
+                                                                    title={`Avanzar a ${STATUS_LABELS[nextStatus]}`}
+                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                                                                >
+                                                                    <ArrowRightCircle size={15} />
+                                                                </button>
+                                                            )}
 
-                                                        {/* Cancel */}
-                                                        {canCancel && (
-                                                            <button
-                                                                onClick={() => handleCancel(order.id)}
-                                                                title="Cancelar orden"
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-colors"
-                                                            >
-                                                                <XCircle size={15} />
-                                                            </button>
-                                                        )}
+                                                            {/* Cancel */}
+                                                            {canCancel && (
+                                                                <button
+                                                                    onClick={() => handleCancel(order.id)}
+                                                                    title="Cancelar orden"
+                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                                                                >
+                                                                    <XCircle size={15} />
+                                                                </button>
+                                                            )}
 
-                                                        {/* Delete — only canceled */}
-                                                        {canDelete && (
-                                                            <button
-                                                                onClick={() => handleOpenDelete(order)}
-                                                                title="Eliminar orden"
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                                                            >
-                                                                <Trash2 size={14} />
-                                                            </button>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </div>
+                                                            {/* Delete — only canceled */}
+                                                            {canDelete && (
+                                                                <button
+                                                                    onClick={() => handleOpenDelete(order)}
+                                                                    title="Eliminar orden"
+                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </div>
+                                            ) : null}
                                         </td>
                                     </tr>
                                 );

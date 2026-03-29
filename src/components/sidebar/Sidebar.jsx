@@ -6,13 +6,15 @@ import logo from "../../assets/logo_color_AC.png";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import useWindowWidth from "../../hooks/useWindowWidth";
 import { useAuth } from "../../context/AuthContext";
+import usePermissions from "../../hooks/usePermissions";
 
 const AUTO_COLLAPSE_WIDTH = 980;
 
 export default function Sidebar() {
     const [manualCollapsed, setManualCollapsed] = useState(false);
     const windowWidth = useWindowWidth();
-    const { logout } = useAuth();
+    const { auth, logout } = useAuth();
+    const { isMaster, canRead, canWrite } = usePermissions();
     const navigate = useNavigate();
 
     const isAutoCollapsed = windowWidth < AUTO_COLLAPSE_WIDTH;
@@ -27,6 +29,18 @@ export default function Sidebar() {
         logout();
         navigate("/login", { replace: true });
     }
+
+    // Filter menu items based on permissions
+    const visibleMenu = menu.filter(item => {
+        // Master-only items
+        if (item.masterOnly) return isMaster;
+        // No permission key = always visible (Dashboard)
+        if (!item.permission) return true;
+        // Items that require write access (Registrar Venta)
+        if (item.requireWrite) return canWrite(item.permission);
+        // Regular items — need at least read
+        return canRead(item.permission);
+    });
 
     return (
         <aside
@@ -67,7 +81,7 @@ export default function Sidebar() {
 
                 {/* Menu */}
                 <nav className={`flex flex-col gap-2 p-4 ${collapsed ? "items-center" : ""}`}>
-                    {menu.map(item => (
+                    {visibleMenu.map(item => (
                         <SidebarItem key={item.name} name={item.name} path={item.path} Icon={item.icon} collapsed={collapsed} />
                     ))}
                 </nav>
