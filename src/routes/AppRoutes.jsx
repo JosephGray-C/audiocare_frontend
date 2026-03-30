@@ -13,12 +13,15 @@ import PedidosProveedor from "../pages/PedidosProveedor";
 import Productos from "../pages/Productos";
 import Clientes from "../pages/Clientes";
 import Admins from "../pages/Admins";
+import AuthLayout from "../layouts/AuthLayout";
 
 export default function AppRoutes() {
     return (
         <Routes>
             {/* Auth */}
-            <Route path="/login" element={<LoginPage />} />
+            <Route element={<AuthLayout />}>
+                <Route path='/login' element={<LoginPage />} handle={{ title: "Iniciar sesión" }} />
+            </Route>
 
             {/* Main app — protected */}
             <Route
@@ -28,43 +31,91 @@ export default function AppRoutes() {
                     </ProtectedRoute>
                 }
             >
-                <Route path="/" element={<Dashboard />} handle={{ title: "Dashboard" }} />
+                <Route path='/' element={<Dashboard />} handle={{ title: "Dashboard" }} />
 
-                <Route path="/ventas" element={
-                    <PermissionGuard module="sales"><Ventas /></PermissionGuard>
-                } handle={{ title: "Ventas" }} />
+                <Route
+                    path='/ventas'
+                    element={
+                        <PermissionGuard module='sales'>
+                            <Ventas />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Ventas" }}
+                />
 
-                <Route path="/inventario" element={
-                    <PermissionGuard module="products"><Inventario /></PermissionGuard>
-                } handle={{ title: "Inventario" }} />
+                <Route
+                    path='/inventario'
+                    element={
+                        <PermissionGuard module='products'>
+                            <Inventario />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Inventario" }}
+                />
 
-                <Route path="/registrar-venta" element={
-                    <PermissionGuard module="sales" requireWrite><RegistrarVenta /></PermissionGuard>
-                } handle={{ title: "Registrar Venta" }} />
+                <Route
+                    path='/registrar-venta'
+                    element={
+                        <PermissionGuard module='sales' requireWrite>
+                            <RegistrarVenta />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Registrar Venta" }}
+                />
 
-                <Route path="/modelos" element={
-                    <PermissionGuard module="models"><ModelosProducto /></PermissionGuard>
-                } handle={{ title: "Modelos Producto" }} />
+                <Route
+                    path='/modelos'
+                    element={
+                        <PermissionGuard module='models'>
+                            <ModelosProducto />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Modelos Producto" }}
+                />
 
-                <Route path="/pedidos-proveedor" element={
-                    <PermissionGuard module="supplierOrders"><PedidosProveedor /></PermissionGuard>
-                } handle={{ title: "Pedidos Proveedor" }} />
+                <Route
+                    path='/pedidos-proveedor'
+                    element={
+                        <PermissionGuard module='supplierOrders'>
+                            <PedidosProveedor />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Pedidos Proveedor" }}
+                />
 
-                <Route path="/productos" element={
-                    <PermissionGuard module="products"><Productos /></PermissionGuard>
-                } handle={{ title: "Productos" }} />
+                <Route
+                    path='/productos'
+                    element={
+                        <PermissionGuard module='products'>
+                            <Productos />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Productos" }}
+                />
 
-                <Route path="/clientes" element={
-                    <PermissionGuard module="clients"><Clientes /></PermissionGuard>
-                } handle={{ title: "Clientes" }} />
+                <Route
+                    path='/clientes'
+                    element={
+                        <PermissionGuard module='clients'>
+                            <Clientes />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Clientes" }}
+                />
 
-                <Route path="/admins" element={
-                    <PermissionGuard masterOnly><Admins /></PermissionGuard>
-                } handle={{ title: "Administradores" }} />
+                <Route
+                    path='/admins'
+                    element={
+                        <PermissionGuard masterOnly>
+                            <Admins />
+                        </PermissionGuard>
+                    }
+                    handle={{ title: "Administradores" }}
+                />
             </Route>
 
             {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
     );
 }
