@@ -7,12 +7,6 @@ export const menu = [
         icon: LayoutDashboard,
     },
     {
-        name: "Ventas",
-        path: "/ventas",
-        icon: ShoppingCart,
-        permission: "sales",
-    },
-    {
         name: "Inventario",
         path: "/inventario",
         icon: Boxes,
@@ -24,6 +18,12 @@ export const menu = [
         icon: PlusCircle,
         permission: "sales",
         requireWrite: true,
+    },
+    {
+        name: "Ventas",
+        path: "/ventas",
+        icon: ShoppingCart,
+        permission: "sales",
     },
     {
         name: "Modelos Producto",
