@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ShieldCheck, Plus, Search, Pencil, Trash2, Loader2, Shield, Crown } from "lucide-react";
 import { getAdmins, createAdmin, updateAdmin, updateAdminPermissions, deleteAdmin } from "../services/adminService";
 import { useAuth } from "../context/AuthContext";
@@ -31,6 +31,11 @@ export default function Admins() {
 
     const { auth } = useAuth();
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     // ── Fetch ────────────────────────────────────────────────────────────
 
@@ -40,11 +45,11 @@ export default function Admins() {
             const data = await getAdmins();
             setAdmins(data);
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoadingData(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchAdmins();

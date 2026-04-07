@@ -9,7 +9,7 @@ import LoadingButton from "../components/ui/LoadingButton";
 import RenderField from "../components/form/RenderField";
 import DevRegisterPanel from "../components/auth/DevRegisterPanel";
 
-const DEV_ENABLE_REGISTER = true;
+const DEV_ENABLE_REGISTER = false;
 
 const LOGIN_INITIAL = {
     email: "",

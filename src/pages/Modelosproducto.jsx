@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Package, Plus, Search, Filter, Pencil, Trash2, Loader2 } from "lucide-react";
 import { getModelProducts, createModelProduct, updateModelProduct, deleteModelProduct } from "../services/modelProductService";
 import { convertCRCToEuro, formatCRC, formatConvertedCurrency, convertCRCToEuro as toEur } from "../utils/currency";
@@ -36,8 +36,13 @@ export default function ModelosProducto() {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("models");
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -47,11 +52,11 @@ export default function ModelosProducto() {
             const data = await getModelProducts();
             setModels(data);
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoadingData(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchModels();

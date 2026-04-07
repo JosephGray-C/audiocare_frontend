@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Users, Plus, Search, Filter, Pencil, Trash2, Loader2 } from "lucide-react";
 import { getClients, createClient, updateClient, deleteClient } from "../services/clientService";
 import { useAlert } from "../context/AlertContext";
@@ -35,8 +35,13 @@ export default function Clientes() {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("clients");
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -46,11 +51,11 @@ export default function Clientes() {
             const data = await getClients();
             setClients(data);
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoadingData(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchClients();

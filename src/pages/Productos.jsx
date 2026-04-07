@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Hash, Plus, Search, Filter, Pencil, Trash2, Loader2, Package, Truck } from "lucide-react";
 import { getAllProducts, createProduct, updateProduct, deleteProduct } from "../services/productService";
 import { getModelProducts } from "../services/modelProductService";
@@ -45,8 +45,13 @@ export default function Productos() {
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("products");
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -62,11 +67,11 @@ export default function Productos() {
             setModels(modelsData);
             setSupplierOrders(ordersData);
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoadingData(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchData();

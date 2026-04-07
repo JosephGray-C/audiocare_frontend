@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback, useMemo } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
@@ -16,20 +16,22 @@ export function AlertProvider({ children }) {
         severity: "success",
     });
 
-    const showAlert = (message, severity = "success") => {
+    const showAlert = useCallback((message, severity = "success") => {
         setAlert({
             open: true,
             message,
             severity,
         });
-    };
+    }, []);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setAlert(prev => ({ ...prev, open: false }));
-    };
+    }, []);
+
+    const value = useMemo(() => ({ showAlert }), [showAlert]);
 
     return (
-        <AlertContext.Provider value={{ showAlert }}>
+        <AlertContext.Provider value={value}>
             {children}
 
             <Snackbar
@@ -37,20 +39,21 @@ export function AlertProvider({ children }) {
                 autoHideDuration={getDuration(alert.severity)}
                 onClose={handleClose}
                 anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                    vertical: "bottom",
+                    horizontal: "center",
                 }}
-                sx={{
-                    mt: 4,
-                    mr: 2,
-                }}
+                sx={{ mb: 3 }}
             >
                 <Alert
                     onClose={handleClose}
                     severity={alert.severity}
                     variant='outlined'
                     sx={{
-                        width: "420px",
+                        width: {
+                            xs: "calc(100vw - 24px)",
+                            sm: "420px",
+                        },
+                        maxWidth: "420px",
                         bgcolor: "background.paper",
                     }}
                 >

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Truck, Plus, Search, Calendar, Pencil, Loader2 } from "lucide-react";
 import { getSupplierOrders, createSupplierOrder, updateSupplierOrder } from "../services/supplierOrderService";
 import { useAlert } from "../context/AlertContext";
@@ -20,8 +20,13 @@ export default function PedidosProveedor() {
     const [modalLoading, setModalLoading] = useState(false);
 
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("supplierOrders");
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     // ── Fetch data ───────────────────────────────────────────────────────
 
@@ -31,11 +36,11 @@ export default function PedidosProveedor() {
             const data = await getSupplierOrders();
             setOrders(data);
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoadingData(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchOrders();
