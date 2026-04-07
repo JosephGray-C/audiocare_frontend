@@ -13,13 +13,6 @@ export const menu = [
         permission: "products",
     },
     {
-        name: "Registrar Venta",
-        path: "/registrar-venta",
-        icon: PlusCircle,
-        permission: "sales",
-        requireWrite: true,
-    },
-    {
         name: "Ventas",
         path: "/ventas",
         icon: ShoppingCart,

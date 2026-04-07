@@ -5,9 +5,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import PermissionGuard from "./PermissionGuard";
 import LoginPage from "../pages/LoginPage";
 import Dashboard from "../pages/Dashboard";
-import Ventas from "../pages/Ventas";
+import Ventas from "../pages/Sales";
 import Inventario from "../pages/Inventario";
-import RegistrarVenta from "../pages/RegistrarVenta";
 import ModelosProducto from "../pages/ModelosProducto";
 import PedidosProveedor from "../pages/PedidosProveedor";
 import Productos from "../pages/Productos";
@@ -51,16 +50,6 @@ export default function AppRoutes() {
                         </PermissionGuard>
                     }
                     handle={{ title: "Inventario" }}
-                />
-
-                <Route
-                    path='/registrar-venta'
-                    element={
-                        <PermissionGuard module='sales' requireWrite>
-                            <RegistrarVenta />
-                        </PermissionGuard>
-                    }
-                    handle={{ title: "Registrar Venta" }}
                 />
 
                 <Route
