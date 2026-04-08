@@ -35,7 +35,7 @@ export default function SupplierOrderFormView({ order = null, onSaved }) {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const { showAlert } = useAlert();
+    const { showAlert, closeAlert } = useAlert();
 
     const isEdit = !!order;
 
@@ -68,6 +68,7 @@ export default function SupplierOrderFormView({ order = null, onSaved }) {
     function handleReset() {
         setFormData(getInitialForm(order));
         setErrors({});
+        closeAlert();
     }
 
     function validate() {

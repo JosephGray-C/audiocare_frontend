@@ -71,6 +71,7 @@ export default function ClientFormView({ client = null, onSaved }) {
         const initial = getInitialForm(client);
         setFormData(initial);
         setErrors({});
+        closeAlert();
     }
 
     function validate() {
@@ -135,7 +136,7 @@ export default function ClientFormView({ client = null, onSaved }) {
 
     return (
         <div className='w-full'>
-            <div className='max-w-4xl mx-auto space-y-5'>
+           <div className='max-w-4xl mx-auto space-y-5'>
                 <ModulePanelHeader
                     title={isEdit ? "Editar Cliente" : "Registrar Cliente"}
                     subtitle={

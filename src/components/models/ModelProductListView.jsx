@@ -4,7 +4,6 @@ import { getModelProducts, deleteModelProduct } from "../../services/modelProduc
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 
 const STATUS_LABELS = {
@@ -24,11 +23,7 @@ export default function ModelProductListView({ refreshKey = 0, onStartCreate, on
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
 
-    const [showDelete, setShowDelete] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleteLoading, setDeleteLoading] = useState(false);
-
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm } = useAlert();
     const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("models");
@@ -69,25 +64,22 @@ export default function ModelProductListView({ refreshKey = 0, onStartCreate, on
     }, [models, search, statusFilter]);
 
     function handleOpenDelete(model) {
-        setDeleteTarget(model);
-        setShowDelete(true);
-    }
-
-    async function handleConfirmDelete() {
-        if (!deleteTarget) return;
-
-        try {
-            setDeleteLoading(true);
-            await deleteModelProduct(deleteTarget.id);
-            showAlert("Modelo eliminado correctamente", "success");
-            setShowDelete(false);
-            setDeleteTarget(null);
-            await fetchModels();
-        } catch (error) {
-            handleApiError(error, showAlert);
-        } finally {
-            setDeleteLoading(false);
-        }
+        showConfirm({
+            title: "Eliminar modelo",
+            message: `¿Está seguro de eliminar el modelo "${model.name}" (Código: ${model.modelCode})? Si tiene productos asociados, la eliminación fallará.`,
+            confirmText: "Eliminar",
+            cancelText: "Cancelar",
+            severity: "error",
+            onConfirm: async () => {
+                try {
+                    await deleteModelProduct(model.id);
+                    showAlert("Modelo eliminado correctamente", "success");
+                    await fetchModels();
+                } catch (error) {
+                    handleApiError(error, showAlert);
+                }
+            },
+        });
     }
 
     function fmtCRC(value) {
@@ -281,21 +273,6 @@ export default function ModelProductListView({ refreshKey = 0, onStartCreate, on
                     </div>
                 )}
             </div>
-
-            <DeleteConfirmModal
-                open={showDelete}
-                onClose={() => {
-                    setShowDelete(false);
-                    setDeleteTarget(null);
-                }}
-                onConfirm={handleConfirmDelete}
-                loading={deleteLoading}
-                message={
-                    deleteTarget
-                        ? `¿Está seguro de eliminar el modelo "${deleteTarget.name}" (Código: ${deleteTarget.modelCode})? Si tiene productos asociados, la eliminación fallará.`
-                        : undefined
-                }
-            />
         </div>
     );
 }

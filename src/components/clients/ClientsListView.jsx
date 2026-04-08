@@ -4,7 +4,6 @@ import { getClients, deleteClient } from "../../services/clientService";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 
 const TYPE_LABELS = {
@@ -24,11 +23,7 @@ export default function ClientsListView({ refreshKey = 0, onStartCreate, onStart
     const [search, setSearch] = useState("");
     const [typeFilter, setTypeFilter] = useState("ALL");
 
-    const [showDelete, setShowDelete] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleteLoading, setDeleteLoading] = useState(false);
-
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm } = useAlert();
     const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("clients");
@@ -76,25 +71,22 @@ export default function ClientsListView({ refreshKey = 0, onStartCreate, onStart
     }, [clients, search, typeFilter]);
 
     function handleOpenDelete(client) {
-        setDeleteTarget(client);
-        setShowDelete(true);
-    }
-
-    async function handleConfirmDelete() {
-        if (!deleteTarget) return;
-
-        try {
-            setDeleteLoading(true);
-            await deleteClient(deleteTarget.id);
-            showAlert("Cliente eliminado correctamente", "success");
-            setShowDelete(false);
-            setDeleteTarget(null);
-            await fetchClients();
-        } catch (error) {
-            handleApiError(error, showAlert);
-        } finally {
-            setDeleteLoading(false);
-        }
+        showConfirm({
+            title: "Eliminar cliente",
+            message: `¿Está seguro de eliminar al cliente "${client.name}"? Si tiene órdenes registradas, la eliminación fallará.`,
+            confirmText: "Eliminar",
+            cancelText: "Cancelar",
+            severity: "error",
+            onConfirm: async () => {
+                try {
+                    await deleteClient(client.id);
+                    showAlert("Cliente eliminado correctamente", "success");
+                    await fetchClients();
+                } catch (error) {
+                    handleApiError(error, showAlert);
+                }
+            },
+        });
     }
 
     function fullName(client) {
@@ -274,21 +266,6 @@ export default function ClientsListView({ refreshKey = 0, onStartCreate, onStart
                     </div>
                 )}
             </div>
-
-            <DeleteConfirmModal
-                open={showDelete}
-                onClose={() => {
-                    setShowDelete(false);
-                    setDeleteTarget(null);
-                }}
-                onConfirm={handleConfirmDelete}
-                loading={deleteLoading}
-                message={
-                    deleteTarget
-                        ? `¿Está seguro de eliminar al cliente "${deleteTarget.name}"? Si tiene órdenes registradas, la eliminación fallará.`
-                        : undefined
-                }
-            />
         </div>
     );
 }

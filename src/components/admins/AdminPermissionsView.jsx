@@ -44,9 +44,7 @@ export default function AdminPermissionsView({ admin = null, onSaved }) {
         setOriginal(state);
     }, [admin]);
 
-    const hasChanges = useMemo(() => {
-        return JSON.stringify(perms) !== JSON.stringify(original);
-    }, [perms, original]);
+    if (!admin) return null;
 
     const adminName = [admin?.name, admin?.lastName1].filter(Boolean).join(" ");
 

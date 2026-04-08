@@ -42,3 +42,8 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
+.main-content-scroll,
+.scroll-area {
+  scrollbar-gutter: stable;
+}

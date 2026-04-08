@@ -6,7 +6,6 @@ import { getSupplierOrders } from "../../services/supplierOrderService";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 
 const STATUS_LABELS = {
@@ -32,11 +31,7 @@ export default function ProductListView({ refreshKey = 0, onStartCreate, onStart
     const [models, setModels] = useState([]);
     const [supplierOrders, setSupplierOrders] = useState([]);
 
-    const [showDelete, setShowDelete] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleteLoading, setDeleteLoading] = useState(false);
-
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm } = useAlert();
     const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("products");
@@ -97,25 +92,22 @@ export default function ProductListView({ refreshKey = 0, onStartCreate, onStart
             return;
         }
 
-        setDeleteTarget(product);
-        setShowDelete(true);
-    }
-
-    async function handleConfirmDelete() {
-        if (!deleteTarget) return;
-
-        try {
-            setDeleteLoading(true);
-            await deleteProduct(deleteTarget.id);
-            showAlert("Producto eliminado correctamente", "success");
-            setShowDelete(false);
-            setDeleteTarget(null);
-            await fetchData();
-        } catch (error) {
-            handleApiError(error, showAlert);
-        } finally {
-            setDeleteLoading(false);
-        }
+        showConfirm({
+            title: "Eliminar producto",
+            message: `¿Está seguro de eliminar el producto con serie "${product.serialNum}"? Se eliminará del inventario y se generará el movimiento correspondiente.`,
+            confirmText: "Eliminar",
+            cancelText: "Cancelar",
+            severity: "error",
+            onConfirm: async () => {
+                try {
+                    await deleteProduct(product.id);
+                    showAlert("Producto eliminado correctamente", "success");
+                    await fetchData();
+                } catch (error) {
+                    handleApiError(error, showAlert);
+                }
+            },
+        });
     }
 
     function handleEditClick(product) {
@@ -385,21 +377,6 @@ export default function ProductListView({ refreshKey = 0, onStartCreate, onStart
                     </div>
                 )}
             </div>
-
-            <DeleteConfirmModal
-                open={showDelete}
-                onClose={() => {
-                    setShowDelete(false);
-                    setDeleteTarget(null);
-                }}
-                onConfirm={handleConfirmDelete}
-                loading={deleteLoading}
-                message={
-                    deleteTarget
-                        ? `¿Está seguro de eliminar el producto con serie "${deleteTarget.serialNum}"? Se eliminará del inventario y se generará el movimiento correspondiente.`
-                        : undefined
-                }
-            />
         </div>
     );
 }

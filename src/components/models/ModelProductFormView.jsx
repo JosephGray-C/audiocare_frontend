@@ -35,7 +35,7 @@ export default function ModelProductFormView({ model = null, onSaved }) {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const { showAlert } = useAlert();
+    const { showAlert, closeAlert } = useAlert();
 
     const isEdit = !!model;
 
@@ -90,6 +90,7 @@ export default function ModelProductFormView({ model = null, onSaved }) {
     function handleReset() {
         setFormData(getInitialForm(model));
         setErrors({});
+        closeAlert();
     }
 
     function validateForm() {
@@ -172,8 +173,10 @@ export default function ModelProductFormView({ model = null, onSaved }) {
                 />
 
                 <form id='modelProductForm' onSubmit={handleSubmit} className='space-y-5'>
-                    <div className='w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden'>
-                        <div className='px-5 py-5 space-y-5 lg:px-8 lg:py-7 lg:space-y-7'>
+                    <div className='bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden'>
+                        <div className='px-5 py-5 space-y-5 lg:px-8 lg:py-7 lg:space-y-4'>
+                            <h2 className='text-sm font-semibold text-slate-700 uppercase tracking-wider'>Datos del modelo</h2>
+
                             <FormField
                                 label='Código Modelo'
                                 name='modelCode'

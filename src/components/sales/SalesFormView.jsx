@@ -43,7 +43,7 @@ export default function SalesFormView({ onSaleCreated }) {
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
 
-    const { showAlert } = useAlert();
+    const { showAlert, closeAlert } = useAlert();
     const alertRef = useRef(showAlert);
 
     useEffect(() => {
@@ -77,6 +77,7 @@ export default function SalesFormView({ onSaleCreated }) {
         setNotes("");
         setProductLines([createEmptyLine()]);
         setErrors({});
+        closeAlert();
     }
 
     function handleClientChange(id) {

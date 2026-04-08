@@ -4,7 +4,6 @@ import { getAdmins, deleteAdmin } from "../../services/adminService";
 import { useAuth } from "../../context/AuthContext";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 
 export default function AdminsListView({ refreshKey = 0, onStartCreate, onStartEdit, onStartPermissions }) {
@@ -13,12 +12,8 @@ export default function AdminsListView({ refreshKey = 0, onStartCreate, onStartE
     const [loadingData, setLoadingData] = useState(true);
     const [search, setSearch] = useState("");
 
-    const [showDelete, setShowDelete] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleteLoading, setDeleteLoading] = useState(false);
-
     const { auth } = useAuth();
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm } = useAlert();
     const alertRef = useRef(showAlert);
 
     useEffect(() => {
@@ -71,25 +66,22 @@ export default function AdminsListView({ refreshKey = 0, onStartCreate, onStartE
             return;
         }
 
-        setDeleteTarget(admin);
-        setShowDelete(true);
-    }
-
-    async function handleConfirmDelete() {
-        if (!deleteTarget) return;
-
-        try {
-            setDeleteLoading(true);
-            await deleteAdmin(deleteTarget.id);
-            showAlert("Admin eliminado correctamente", "success");
-            setShowDelete(false);
-            setDeleteTarget(null);
-            await fetchAdmins();
-        } catch (error) {
-            handleApiError(error, showAlert);
-        } finally {
-            setDeleteLoading(false);
-        }
+        showConfirm({
+            title: "Eliminar administrador",
+            message: `¿Está seguro de eliminar al admin "${admin.name} ${admin.lastName1}"? Sus permisos serán eliminados automáticamente.`,
+            confirmText: "Eliminar",
+            cancelText: "Cancelar",
+            severity: "error",
+            onConfirm: async () => {
+                try {
+                    await deleteAdmin(admin.id);
+                    showAlert("Admin eliminado correctamente", "success");
+                    await fetchAdmins();
+                } catch (error) {
+                    handleApiError(error, showAlert);
+                }
+            },
+        });
     }
 
     function fullName(admin) {
@@ -309,21 +301,6 @@ export default function AdminsListView({ refreshKey = 0, onStartCreate, onStartE
                     </div>
                 )}
             </div>
-
-            <DeleteConfirmModal
-                open={showDelete}
-                onClose={() => {
-                    setShowDelete(false);
-                    setDeleteTarget(null);
-                }}
-                onConfirm={handleConfirmDelete}
-                loading={deleteLoading}
-                message={
-                    deleteTarget
-                        ? `¿Está seguro de eliminar al admin "${deleteTarget.name} ${deleteTarget.lastName1}"? Sus permisos serán eliminados automáticamente.`
-                        : undefined
-                }
-            />
         </div>
     );
 }

@@ -4,7 +4,6 @@ import { getOrders, updateOrderStatus, cancelOrder, deleteOrder } from "../../se
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 
 const STATUS_LABELS = {
@@ -35,12 +34,9 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
 
-    const [showDelete, setShowDelete] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleteLoading, setDeleteLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState(null);
 
-    const { showAlert } = useAlert();
+    const { showAlert, showConfirm } = useAlert();
     const alertRef = useRef(showAlert);
     const { canWrite } = usePermissions();
     const hasWriteAccess = canWrite("sales");
@@ -120,25 +116,22 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
     }
 
     function handleOpenDelete(order) {
-        setDeleteTarget(order);
-        setShowDelete(true);
-    }
-
-    async function handleConfirmDelete() {
-        if (!deleteTarget) return;
-
-        try {
-            setDeleteLoading(true);
-            await deleteOrder(deleteTarget.id);
-            showAlert("Orden eliminada correctamente", "success");
-            setShowDelete(false);
-            setDeleteTarget(null);
-            await fetchOrders();
-        } catch (error) {
-            handleApiError(error, showAlert);
-        } finally {
-            setDeleteLoading(false);
-        }
+        showConfirm({
+            title: "Eliminar orden",
+            message: `¿Está seguro de eliminar la orden "${order.invoiceNum}"? Esta es una eliminación lógica (soft delete).`,
+            confirmText: "Eliminar",
+            cancelText: "Cancelar",
+            severity: "error",
+            onConfirm: async () => {
+                try {
+                    await deleteOrder(order.id);
+                    showAlert("Orden eliminada correctamente", "success");
+                    await fetchOrders();
+                } catch (error) {
+                    handleApiError(error, showAlert);
+                }
+            },
+        });
     }
 
     function handleClearFilters() {
@@ -419,21 +412,6 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
                     </div>
                 )}
             </div>
-
-            <DeleteConfirmModal
-                open={showDelete}
-                onClose={() => {
-                    setShowDelete(false);
-                    setDeleteTarget(null);
-                }}
-                onConfirm={handleConfirmDelete}
-                loading={deleteLoading}
-                message={
-                    deleteTarget
-                        ? `¿Está seguro de eliminar la orden "${deleteTarget.invoiceNum}"? Esta es una eliminación lógica (soft delete).`
-                        : undefined
-                }
-            />
         </div>
     );
 }

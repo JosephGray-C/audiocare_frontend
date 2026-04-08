@@ -37,7 +37,7 @@ export default function AdminFormView({ admin = null, onSaved }) {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const { showAlert } = useAlert();
+    const { showAlert, closeAlert } = useAlert();
 
     const isEdit = !!admin;
 
@@ -47,10 +47,6 @@ export default function AdminFormView({ admin = null, onSaved }) {
         setOriginalData(initial);
         setErrors({});
     }, [admin]);
-
-    const hasChanges = useMemo(() => {
-        return !isEdit || JSON.stringify(formData) !== JSON.stringify(originalData);
-    }, [formData, originalData, isEdit]);
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -62,6 +58,7 @@ export default function AdminFormView({ admin = null, onSaved }) {
         const initial = getInitialForm(admin);
         setFormData(initial);
         setErrors({});
+        closeAlert();
     }
 
     function validate() {

@@ -47,7 +47,7 @@ export default function ProductFormView({ product = null, onSaved }) {
     const [loadingOptions, setLoadingOptions] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const { showAlert } = useAlert();
+    const { showAlert, closeAlert } = useAlert();
 
     const isEdit = !!product;
 
@@ -102,6 +102,7 @@ export default function ProductFormView({ product = null, onSaved }) {
     function handleReset() {
         setFormData(getInitialForm(product));
         setErrors({});
+        closeAlert();
     }
 
     function validate() {
