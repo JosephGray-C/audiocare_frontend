@@ -5,6 +5,7 @@ import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
 import DeleteConfirmModal from "../modals/DeleteConfirmModal";
+import ModulePanelHeader from "../ui/ModulePanelHeader";
 
 const STATUS_LABELS = {
     PENDING: "Pendiente",
@@ -25,7 +26,7 @@ const TYPE_LABELS = {
     DISTRIBUTOR: "Distribuidor",
 };
 
-export default function SalesListView({ refreshKey = 0, onStartCreateSale, showCreateButton = false }) {
+export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
     const [orders, setOrders] = useState([]);
     const [filtered, setFiltered] = useState([]);
     const [loadingData, setLoadingData] = useState(true);
@@ -179,42 +180,32 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale, showC
     const completedOrders = orders.filter(order => order.status === "COMPLETED");
     const totalAmount = completedOrders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
 
+    const headerActions = hasWriteAccess ? (
+        <button
+            type='button'
+            onClick={onStartCreateSale}
+            className='
+                flex items-center gap-2 px-5 py-2.5 rounded-xl
+                bg-[#34c3d6] text-white text-sm font-semibold
+                hover:bg-[#28b4c8] transition-colors
+            '
+        >
+            <Plus size={16} />
+            Nueva Venta
+        </button>
+    ) : null;
+
     return (
-        <div className='w-full space-y-5'>
-            {/* Header */}
-            <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-                <div className='flex items-center gap-3'>
-                    <div className='w-10 h-10 rounded-xl bg-[#34c3d6]/10 flex items-center justify-center'>
-                        <ShoppingCart size={20} className='text-[#34c3d6]' />
-                    </div>
-                    <div>
-                        <h1 className='text-xl font-bold text-slate-800'>Ventas</h1>
-                        <p className='text-sm text-slate-400'>
-                            {orders.length} orden{orders.length !== 1 ? "es" : ""} · Total: {fmtCRC(totalAmount)}
-                        </p>
-                    </div>
-                </div>
+        <div className='space-y-5'>
+            <ModulePanelHeader
+                title='Ventas'
+                subtitle={`${orders.length} orden${orders.length !== 1 ? "es" : ""} · Total: ${fmtCRC(totalAmount)}`}
+                icon={ShoppingCart}
+                variant='list'
+                actions={headerActions}
+            />
 
-                {hasWriteAccess && showCreateButton && (
-                    <button
-                        type='button'
-                        onClick={onStartCreateSale}
-                        className='
-                            flex items-center gap-2 px-5 py-2.5 rounded-xl
-                            bg-[#34c3d6] text-white text-sm font-semibold
-                            hover:bg-[#28b4c8] transition-colors
-                            self-start sm:self-auto
-                        '
-                    >
-                        <Plus size={16} />
-                        Nueva Venta
-                    </button>
-                )}
-            </div>
-
-            {/* Table card */}
             <div className='bg-white rounded-2xl border border-slate-200 shadow-sm'>
-                {/* Filters row 1 */}
                 <div className='flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center'>
                     <div className='relative flex-1'>
                         <Search size={15} className='absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400' />
@@ -243,7 +234,6 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale, showC
                     </div>
                 </div>
 
-                {/* Filters row 2 */}
                 <div className='flex flex-col gap-3 px-5 pb-4 sm:flex-row sm:items-center'>
                     <div className='flex items-center gap-2'>
                         <div className='relative'>
@@ -280,7 +270,6 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale, showC
                     )}
                 </div>
 
-                {/* Table */}
                 <div className='overflow-x-auto'>
                     <table className='w-full text-sm'>
                         <thead>

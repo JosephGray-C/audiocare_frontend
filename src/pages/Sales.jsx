@@ -8,9 +8,8 @@ const PANELS = [
     { key: "form", label: "Registro" },
 ];
 
-export default function Ventas() {
+export default function Sales() {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [carouselUnlocked, setCarouselUnlocked] = useState(true);
     const [listRefreshKey, setListRefreshKey] = useState(0);
 
     const totalSlides = PANELS.length;
@@ -21,60 +20,50 @@ export default function Ventas() {
         };
     }, [currentSlide]);
 
-    function unlockCarousel() {
-        setCarouselUnlocked(true);
-    }
-
     function handleStartCreateSale() {
-        unlockCarousel();
         setCurrentSlide(1);
     }
 
     function goToNextSlide() {
-        if (!carouselUnlocked) return;
         setCurrentSlide(prev => (prev + 1) % totalSlides);
     }
 
     function goToPrevSlide() {
-        if (!carouselUnlocked) return;
         setCurrentSlide(prev => (prev - 1 + totalSlides) % totalSlides);
     }
 
     function handleSaleCreated() {
         setListRefreshKey(prev => prev + 1);
-        unlockCarousel();
         setCurrentSlide(0);
     }
 
     return (
         <div className='space-y-4'>
             {/* Header/controles normales, respetando padding visual */}
-            <div className='py-3 '>
+            <div className='py-3'>
                 <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-4 min-h-'>
-                        {/* {carouselUnlocked && ( */}
-                            <div className='flex items-center gap-3'>
-                                <button
-                                    type='button'
-                                    onClick={goToPrevSlide}
-                                    className='inline-flex items-center justify-center text-slate-400 transition-colors hover:text-slate-700'
-                                    aria-label='Panel anterior'
-                                    title='Anterior'
-                                >
-                                    <ChevronLeft size={24} strokeWidth={2.2} />
-                                </button>
+                    <div className='flex items-center gap-4 min-h-8'>
+                        <div className='flex items-center gap-3'>
+                            <button
+                                type='button'
+                                onClick={goToPrevSlide}
+                                className='inline-flex items-center justify-center text-slate-400 transition-colors hover:text-slate-700'
+                                aria-label='Panel anterior'
+                                title='Anterior'
+                            >
+                                <ChevronLeft size={24} strokeWidth={2.2} />
+                            </button>
 
-                                <button
-                                    type='button'
-                                    onClick={goToNextSlide}
-                                    className='inline-flex items-center justify-center text-slate-400 transition-colors hover:text-slate-700'
-                                    aria-label='Panel siguiente'
-                                    title='Siguiente'
-                                >
-                                    <ChevronRight size={24} strokeWidth={2.2} />
-                                </button>
-                            </div>
-                        {/* )} */}
+                            <button
+                                type='button'
+                                onClick={goToNextSlide}
+                                className='inline-flex items-center justify-center text-slate-400 transition-colors hover:text-slate-700'
+                                aria-label='Panel siguiente'
+                                title='Siguiente'
+                            >
+                                <ChevronRight size={24} strokeWidth={2.2} />
+                            </button>
+                        </div>
 
                         <div className='flex items-center gap-2' aria-label='Indicadores del carrusel'>
                             {PANELS.map((panel, index) => {
@@ -109,12 +98,7 @@ export default function Ventas() {
                         style={trackStyle}
                     >
                         <section className='w-full shrink-0 px-4 lg:px-6 xl:px-8'>
-                            <SalesListView
-                                refreshKey={listRefreshKey}
-                                onStartCreateSale={handleStartCreateSale}
-                                // Modify this please, and also in the component itself
-                                showCreateButton={true}   
-                            />
+                            <SalesListView refreshKey={listRefreshKey} onStartCreateSale={handleStartCreateSale} />
                         </section>
 
                         <section className='w-full shrink-0 px-4 lg:px-6 xl:px-8'>

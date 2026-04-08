@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, Headphones } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
+import logo from "../assets/logo_color_AC.png";
 import { login } from "../services/Authservice";
 import { useAuth } from "../context/AuthContext";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
 import LoadingButton from "../components/ui/LoadingButton";
-import RenderField from "../components/form/RenderField";
+import FormField from "../components/form/FormField";
 import DevRegisterPanel from "../components/auth/DevRegisterPanel";
 
 const DEV_ENABLE_REGISTER = false;
@@ -73,9 +74,7 @@ export default function LoginPage() {
     return (
         <div className='w-full max-w-md'>
             <div className='mb-8 flex flex-col items-center text-center'>
-                <div className='mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#34c3d6]/15'>
-                    <Headphones size={28} className='text-[#34c3d6]' />
-                </div>
+                <img src={logo} alt='Audiocare' className='py-7 w-40 select-none pointer-events-none' draggable='false' />
 
                 <h1 className='text-2xl font-bold text-slate-900'>Iniciar sesión</h1>
 
@@ -83,8 +82,8 @@ export default function LoginPage() {
             </div>
 
             <div className='rounded-2xl border border-slate-200 bg-white shadow-sm'>
-                <form id='loginForm' onSubmit={handleSubmit} className='space-y-5 p-6 sm:p-7'>
-                    <RenderField
+                <form id='loginForm' onSubmit={handleSubmit} className='space-y-4 p-6 sm:p-7'>
+                    <FormField
                         name='email'
                         label='Correo electrónico'
                         type='email'
@@ -96,7 +95,7 @@ export default function LoginPage() {
                         autoComplete='email'
                     />
 
-                    <RenderField
+                    <FormField
                         name='password'
                         label='Contraseña'
                         type='password'

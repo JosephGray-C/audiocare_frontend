@@ -7,7 +7,8 @@ import { createOrder } from "../../services/orderClientService";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import SearchableSelect from "../ui/SearchableSelect";
-import LoadingButton from "../ui/LoadingButton";
+import ModulePanelHeader from "../ui/ModulePanelHeader";
+import ModuleFormActions from "../ui/ModuleFormActions";
 
 const TAX_RATE = 0.13;
 
@@ -306,21 +307,16 @@ export default function SalesFormView({ onSaleCreated }) {
     }
 
     return (
-        <div>
+        <div className='w-full'>
             <div className='max-w-4xl mx-auto space-y-5'>
-                {/* Header */}
-                <div className='flex items-center gap-3'>
-                    <div className='w-10 h-10 rounded-xl bg-[#34c3d6]/10 flex items-center justify-center'>
-                        <ShoppingCart size={20} className='text-[#34c3d6]' />
-                    </div>
-                    <div>
-                        <h1 className='text-xl font-bold text-slate-800'>Registrar Venta</h1>
-                        <p className='text-sm text-slate-400'>Complete los datos para registrar una nueva venta</p>
-                    </div>
-                </div>
+                <ModulePanelHeader
+                    title='Registrar Venta'
+                    subtitle='Complete los datos para registrar una nueva venta'
+                    icon={ShoppingCart}
+                    variant='form'
+                />
 
-                <form onSubmit={handleSubmit} className='space-y-5'>
-                    {/* Datos */}
+                <form onSubmit={handleSubmit} id='salesForm' className='space-y-5'>
                     <div className='bg-white rounded-2xl border border-slate-200 shadow-sm p-5 lg:p-6 space-y-4'>
                         <h2 className='text-sm font-semibold text-slate-700 uppercase tracking-wider'>Datos de la venta</h2>
 
@@ -363,14 +359,14 @@ export default function SalesFormView({ onSaleCreated }) {
                                     }}
                                     placeholder='Ej: FAC-2026-001'
                                     className={`
-                                    w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-700
-                                    placeholder:text-slate-300 outline-none transition-colors
-                                    ${
-                                        errors.invoiceNum
-                                            ? "border-red-300 bg-red-50/40"
-                                            : "border-slate-200 bg-white focus:border-[#34c3d6]"
-                                    }
-                                `}
+                                        w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-700
+                                        placeholder:text-slate-300 outline-none transition-colors
+                                        ${
+                                            errors.invoiceNum
+                                                ? "border-red-300 bg-red-50/40"
+                                                : "border-slate-200 bg-white focus:border-[#34c3d6]"
+                                        }
+                                    `}
                                 />
                                 {errors.invoiceNum && <p className='text-xs text-red-500'>{errors.invoiceNum}</p>}
                             </div>
@@ -388,17 +384,20 @@ export default function SalesFormView({ onSaleCreated }) {
                                         setErrors(prev => ({ ...prev, saleDate: null }));
                                     }}
                                     className={`
-                                    w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-700
-                                    outline-none transition-colors
-                                    ${errors.saleDate ? "border-red-300 bg-red-50/40" : "border-slate-200 bg-white focus:border-[#34c3d6]"}
-                                `}
+                                        w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-700
+                                        outline-none transition-colors
+                                        ${
+                                            errors.saleDate
+                                                ? "border-red-300 bg-red-50/40"
+                                                : "border-slate-200 bg-white focus:border-[#34c3d6]"
+                                        }
+                                    `}
                                 />
                                 {errors.saleDate && <p className='text-xs text-red-500'>{errors.saleDate}</p>}
                             </div>
                         </div>
                     </div>
 
-                    {/* Productos */}
                     <div className='bg-white rounded-2xl border border-slate-200 shadow-sm p-5 lg:p-6 space-y-4'>
                         <div className='flex items-center justify-between'>
                             <h2 className='text-sm font-semibold text-slate-700 uppercase tracking-wider'>Productos</h2>
@@ -437,7 +436,6 @@ export default function SalesFormView({ onSaleCreated }) {
                         </button>
                     </div>
 
-                    {/* Totales */}
                     <div className='bg-white rounded-2xl border border-slate-200 shadow-sm p-5 lg:p-6'>
                         <div className='max-w-sm ml-auto space-y-3'>
                             <div className='flex justify-between text-sm'>
@@ -460,22 +458,15 @@ export default function SalesFormView({ onSaleCreated }) {
                             </p>
                         </div>
                     </div>
-
-                    {/* Actions */}
-                    <div className='flex justify-end gap-3'>
-                        <button
-                            type='button'
-                            onClick={resetForm}
-                            className='rounded-xl border border-slate-300 bg-white px-7 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50'
-                        >
-                            Cancelar
-                        </button>
-
-                        <LoadingButton type='submit' loading={submitting}>
-                            Registrar Venta
-                        </LoadingButton>
-                    </div>
                 </form>
+
+                <ModuleFormActions
+                    onReset={resetForm}
+                    resetText='Limpiar'
+                    submitText='Registrar Venta'
+                    submitFormId='salesForm'
+                    loading={submitting}
+                />
             </div>
         </div>
     );

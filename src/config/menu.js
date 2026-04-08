@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, Package, Truck, Hash, Users, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Boxes, Package, Truck, Hash, Users, ShieldCheck } from "lucide-react";
 
 export const menu = [
     {

@@ -4,7 +4,7 @@ import { createAdmin } from "../../services/adminService";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import LoadingButton from "../ui/LoadingButton";
-import RenderField from "../form/RenderField";
+import FormField from "../form/FormField";
 
 const REGISTER_INITIAL = {
     identityNumber: "",
@@ -36,20 +36,25 @@ export default function DevRegisterPanel() {
         if (!registerData.identityNumber.trim()) {
             newErrors.identityNumber = "El número de identidad es obligatorio";
         }
+
         if (!registerData.name.trim()) {
             newErrors.name = "El nombre es obligatorio";
         }
+
         if (!registerData.lastName1.trim()) {
             newErrors.lastName1 = "El primer apellido es obligatorio";
         }
+
         if (!registerData.lastName2.trim()) {
             newErrors.lastName2 = "El segundo apellido es obligatorio";
         }
+
         if (!registerData.email.trim()) {
             newErrors.email = "El correo es obligatorio";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email)) {
             newErrors.email = "Formato de correo inválido";
         }
+
         if (!registerData.password.trim()) {
             newErrors.password = "La contraseña es obligatoria";
         } else if (registerData.password.length < 8) {
@@ -101,7 +106,7 @@ export default function DevRegisterPanel() {
 
             {isOpen && (
                 <form onSubmit={handleSubmit} className='mt-4 space-y-4'>
-                    <RenderField
+                    <FormField
                         name='identityNumber'
                         label='Número de identidad'
                         icon={IdCard}
@@ -111,7 +116,7 @@ export default function DevRegisterPanel() {
                         placeholder='Ej: 123456789'
                     />
 
-                    <RenderField
+                    <FormField
                         name='name'
                         label='Nombre'
                         icon={User}
@@ -122,7 +127,7 @@ export default function DevRegisterPanel() {
                     />
 
                     <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                        <RenderField
+                        <FormField
                             name='lastName1'
                             label='Primer apellido'
                             value={registerData.lastName1}
@@ -130,7 +135,8 @@ export default function DevRegisterPanel() {
                             error={errors.lastName1}
                             placeholder='Apellido 1'
                         />
-                        <RenderField
+
+                        <FormField
                             name='lastName2'
                             label='Segundo apellido'
                             value={registerData.lastName2}
@@ -140,7 +146,7 @@ export default function DevRegisterPanel() {
                         />
                     </div>
 
-                    <RenderField
+                    <FormField
                         name='email'
                         label='Correo electrónico'
                         type='email'
@@ -151,7 +157,7 @@ export default function DevRegisterPanel() {
                         placeholder='admin@audiocare.com'
                     />
 
-                    <RenderField
+                    <FormField
                         name='password'
                         label='Contraseña'
                         type='password'

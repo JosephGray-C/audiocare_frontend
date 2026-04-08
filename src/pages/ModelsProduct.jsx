@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ClientsListView from "../components/clients/ClientsListView";
-import ClientFormView from "../components/clients/ClientFormView";
+import ModelProductListView from "../components/models/ModelProductListView";
+import ModelProductFormView from "../components/models/ModelProductFormView";
 
 const PANELS = [
     { key: "list", label: "Listado" },
     { key: "form", label: "Formulario" },
 ];
 
-export default function Clientes() {
+export default function ModelosProducto() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [selectedClient, setSelectedClient] = useState(null);
+    const [selectedModel, setSelectedModel] = useState(null);
 
     const totalSlides = PANELS.length;
 
@@ -30,18 +30,18 @@ export default function Clientes() {
     }
 
     function handleStartCreate() {
-        setSelectedClient(null);
+        setSelectedModel(null);
         setCurrentSlide(1);
     }
 
-    function handleStartEdit(client) {
-        setSelectedClient(client);
+    function handleStartEdit(model) {
+        setSelectedModel(model);
         setCurrentSlide(1);
     }
 
-    function handleClientSaved() {
+    function handleModelSaved() {
         setRefreshKey(prev => prev + 1);
-        setSelectedClient(null);
+        setSelectedModel(null);
         setCurrentSlide(0);
     }
 
@@ -104,11 +104,11 @@ export default function Clientes() {
                         style={trackStyle}
                     >
                         <section className='w-full shrink-0 px-4 lg:px-6 xl:px-8'>
-                            <ClientsListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
+                            <ModelProductListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
                         </section>
 
                         <section className='w-full shrink-0 px-4 lg:px-6 xl:px-8'>
-                            <ClientFormView client={selectedClient} onSaved={handleClientSaved} />
+                            <ModelProductFormView model={selectedModel} onSaved={handleModelSaved} />
                         </section>
                     </div>
                 </div>
