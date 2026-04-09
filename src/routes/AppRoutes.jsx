@@ -13,6 +13,7 @@ import Productos from "../pages/Productos";
 import Clientes from "../pages/Clientes";
 import Admins from "../pages/Admins";
 import AuthLayout from "../layouts/AuthLayout";
+import Profile from "../pages/Profile";
 
 export default function AppRoutes() {
     return (
@@ -25,7 +26,7 @@ export default function AppRoutes() {
             {/* Main app — protected */}
             <Route
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute> 
                         <MainLayout />
                     </ProtectedRoute>
                 }
@@ -100,6 +101,14 @@ export default function AppRoutes() {
                         </PermissionGuard>
                     }
                     handle={{ title: "Administradores" }}
+                />
+
+                <Route
+                    path='/perfil' 
+                    element={
+                        <Profile/>
+                    }
+                    handle={{tile: "Perfil"}}
                 />
             </Route>
 

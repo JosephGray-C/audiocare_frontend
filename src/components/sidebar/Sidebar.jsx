@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import SidebarItem from "./SidebarItem";
 import { menu } from "../../config/menu";
 import logo from "../../assets/logo_color_AC.png";
-import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut, User } from "lucide-react";
 import useWindowWidth from "../../hooks/useWindowWidth";
 import { useAuth } from "../../context/AuthContext";
 import usePermissions from "../../hooks/usePermissions";
+import { useAlert } from "../../context/AlertContext";
 
 const AUTO_COLLAPSE_WIDTH = 980;
 
@@ -25,9 +26,23 @@ export default function Sidebar() {
         setManualCollapsed(prev => !prev);
     }
 
+    const { showConfirm } = useAlert();
+
     function handleLogout() {
-        logout();
-        navigate("/login", { replace: true });
+        showConfirm({
+            message: "¿Seguro que quieres cerrar sesión?",
+            confirmText: "Sí, cerrar",
+            cancelText: "Cancelar",
+            onConfirm: async () => {
+                logout();
+                navigate("/login", { replace: true });
+            },
+            severity: "warning",
+        });
+    }
+
+    function handlePerfil() {
+        navigate("/perfil");
     }
 
     const visibleMenu = menu.filter(item => {
@@ -78,7 +93,30 @@ export default function Sidebar() {
                 </nav>
             </div>
 
-            <div className='border-t border-slate-200 px-4 py-5 shrink-0'>
+            <div className='border-t border-slate-200 px-4 py-5 shrink-0 space-y-2'>
+                <button
+                    onClick={handlePerfil}
+                    title={collapsed ? "Cerrar sesión" : ""}
+                    className={`
+                        flex items-center w-full rounded-xl
+                        ${collapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"}
+                        text-[#34c3d6] hover:bg-[#34c3d6]/10
+                        transition-colors
+                    `}
+                >
+                    <User size={18} className='text-[#34c3d6]' />
+
+                    <span
+                        className={`
+                            whitespace-nowrap overflow-hidden text-ellipsis
+                            transition-all duration-200
+                            ${collapsed ? "opacity-0 w-0 ml-0" : "opacity-100 ml-1"}
+                        `}
+                    >
+                        Perfil
+                    </span>
+                </button>
+
                 <button
                     onClick={handleLogout}
                     title={collapsed ? "Cerrar sesión" : ""}
