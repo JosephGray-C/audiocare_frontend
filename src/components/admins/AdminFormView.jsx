@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { ShieldCheck, User, IdCard, Mail, Lock } from "lucide-react";
 import { createAdmin, updateAdmin } from "../../services/adminService";
 import { useAlert } from "../../context/AlertContext";
@@ -14,6 +14,7 @@ const EMPTY_FORM = {
     lastName2: "",
     email: "",
     password: "",
+    confirmPassword: "",
     isMaster: false,
 };
 
@@ -27,31 +28,36 @@ function getInitialForm(admin) {
         lastName2: admin.lastName2 || "",
         email: admin.email || "",
         password: "",
+        confirmPassword: "",
         isMaster: admin.isMaster || false,
     };
 }
 
 export default function AdminFormView({ admin = null, onSaved }) {
     const [formData, setFormData] = useState(getInitialForm(admin));
-    const [originalData, setOriginalData] = useState(getInitialForm(admin));
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
     const { showAlert, closeAlert } = useAlert();
 
     const isEdit = !!admin;
+    const shouldShowConfirmPassword = formData.password.trim().length > 0;
 
     useEffect(() => {
         const initial = getInitialForm(admin);
         setFormData(initial);
-        setOriginalData(initial);
         setErrors({});
     }, [admin]);
 
     function handleChange(e) {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        setErrors(prev => ({ ...prev, [name]: null }));
+
+        setErrors(prev => ({
+            ...prev,
+            [name]: null,
+            ...(name === "password" ? { confirmPassword: null } : {}),
+        }));
     }
 
     function handleReset() {
@@ -81,6 +87,14 @@ export default function AdminFormView({ admin = null, onSaved }) {
             newErrors.password = "Mínimo 8 caracteres";
         }
 
+        if (shouldShowConfirmPassword) {
+            if (!formData.confirmPassword.trim()) {
+                newErrors.confirmPassword = "Confirme la contraseña";
+            } else if (formData.password !== formData.confirmPassword) {
+                newErrors.confirmPassword = "Las contraseñas no coinciden";
+            }
+        }
+
         return newErrors;
     }
 
@@ -94,7 +108,15 @@ export default function AdminFormView({ admin = null, onSaved }) {
             return;
         }
 
-        const payload = { ...formData };
+        const payload = {
+            identityNumber: formData.identityNumber,
+            name: formData.name,
+            lastName1: formData.lastName1,
+            lastName2: formData.lastName2,
+            email: formData.email,
+            password: formData.password,
+            isMaster: formData.isMaster,
+        };
 
         if (isEdit && !payload.password) {
             delete payload.password;
@@ -207,6 +229,30 @@ export default function AdminFormView({ admin = null, onSaved }) {
                                 error={errors.password}
                                 placeholder={isEdit ? "Dejar vacío para no cambiar" : "Mínimo 8 caracteres"}
                             />
+                        </div>
+
+                        <div
+                            className={`
+                                overflow-hidden transition-all duration-500 ease-in-out
+                                ${shouldShowConfirmPassword ? "max-h-40 opacity-100 translate-y-0" : "max-h-0 opacity-0 -translate-y-1"}
+                            `}
+                        >
+                            <div className='pt-1'>
+                                <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+                                    <div className='lg:col-start-2'>
+                                        <FormField
+                                            name='confirmPassword'
+                                            label='Confirmar contraseña'
+                                            icon={Lock}
+                                            type='password'
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
+                                            error={errors.confirmPassword}
+                                            placeholder='Repita la contraseña'
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
