@@ -4,6 +4,8 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 const AlertContext = createContext();
 
@@ -101,6 +103,71 @@ export function AlertProvider({ children }) {
         [showAlert, showConfirm, closeAlert],
     );
 
+    const confirmStylesBySeverity = {
+        warning: {
+            borderColor: "#f59e0b",
+            color: "#b45309",
+            hoverBg: "#fffbeb",
+        },
+        error: {
+            borderColor: "#ef4444",
+            color: "#b91c1c",
+            hoverBg: "#fef2f2",
+        },
+        success: {
+            borderColor: "#22c55e",
+            color: "#15803d",
+            hoverBg: "#f0fdf4",
+        },
+        info: {
+            borderColor: "#3b82f6",
+            color: "#1d4ed8",
+            hoverBg: "#eff6ff",
+        },
+    };
+
+    const severityStyle = confirmStylesBySeverity[alert.severity] || confirmStylesBySeverity.warning;
+
+    const neutralActionButtonSx = {
+        minWidth: 36,
+        width: 36,
+        height: 36,
+        p: 0,
+        borderRadius: "30px",
+        borderColor: "#e2e8f0",
+        color: "#64748b",
+        backgroundColor: "#ffffff",
+        boxShadow: "none",
+        transition: "all 0.2s ease",
+        "&:hover": {
+            borderColor: "#cbd5e1",
+            backgroundColor: "#f8fafc",
+            boxShadow: "none",
+        },
+    };
+
+    const semanticActionButtonSx = {
+        minWidth: 36,
+        width: 36,
+        height: 36,
+        p: 0,
+        borderRadius: "30px",
+        borderColor: severityStyle.borderColor,
+        color: severityStyle.color,
+        backgroundColor: "#ffffff",
+        boxShadow: "none",
+        transition: "all 0.2s ease",
+        "&:hover": {
+            borderColor: severityStyle.borderColor,
+            backgroundColor: severityStyle.hoverBg,
+            boxShadow: "none",
+        },
+        "&:disabled": {
+            borderColor: "#e2e8f0",
+            color: "#94a3b8",
+        },
+    };
+
     return (
         <AlertContext.Provider value={value}>
             {children}
@@ -117,60 +184,76 @@ export function AlertProvider({ children }) {
                 sx={{ mb: 3 }}
             >
                 <Alert
-                    onClose={alert.mode === "alert" ? handleClose : undefined}
                     severity={alert.severity}
                     variant='outlined'
                     sx={{
                         width: {
                             xs: "calc(100vw - 24px)",
-                            sm: alert.mode === "confirm" ? "520px" : "420px",
+                            sm: alert.mode === "confirm" ? "460px" : "420px",
                         },
-                        maxWidth: alert.mode === "confirm" ? "520px" : "420px",
+                        maxWidth: alert.mode === "confirm" ? "460px" : "420px",
                         bgcolor: "background.paper",
-                        alignItems: "flex-start",
+                        display: "flex",
+                        alignItems: "center",
+                        py: 1,
+                        "& .MuiAlert-icon": {
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            m: 0,
+                            mr: 1,
+                            alignSelf: "center",
+                        },
                         "& .MuiAlert-message": {
+                            display: "flex",
+                            alignItems: "center",
                             width: "100%",
+                            py: 0,
                         },
                     }}
                 >
-                    {alert.mode === "alert" ? (
-                        alert.message
-                    ) : (
-                        <Stack spacing={1.5}>
-                            <span>{alert.message}</span>
+                    <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={2} sx={{ width: "100%" }}>
+                        <span
+                            style={{
+                                display: "block",
+                                lineHeight: 1.35,
+                                flex: 1,
+                                minWidth: 0,
+                            }}
+                        >
+                            {alert.message}
+                        </span>
 
-                            <Stack direction='row' spacing={1} justifyContent='flex-end'>
+                        {alert.mode === "alert" ? (
+                            <Stack direction='row' spacing={1} sx={{ flexShrink: 0 }}>
+                                <Button size='small' variant='outlined' onClick={handleClose} sx={semanticActionButtonSx}>
+                                    <CloseIcon fontSize='small' />
+                                </Button>
+                            </Stack>
+                        ) : (
+                            <Stack direction='row' spacing={1} sx={{ flexShrink: 0 }}>
                                 <Button
                                     size='small'
                                     variant='outlined'
-                                    color='inherit'
                                     onClick={closeAlert}
                                     disabled={confirmLoading}
-                                    sx={{
-                                        textTransform: "none",
-                                        borderRadius: "3px",
-                                    }}
+                                    sx={neutralActionButtonSx}
                                 >
-                                    {alert.cancelText}
+                                    <CloseIcon fontSize='small' />
                                 </Button>
 
                                 <Button
                                     size='small'
-                                    variant='contained'
-                                    color={alert.severity === "error" ? "error" : "warning"}
+                                    variant='outlined'
                                     onClick={handleConfirm}
                                     disabled={confirmLoading}
-                                    sx={{
-                                        textTransform: "none",
-                                        borderRadius: "3px",
-                                    }}
-                                    startIcon={confirmLoading ? <CircularProgress size={14} color='inherit' /> : null}
+                                    sx={semanticActionButtonSx}
                                 >
-                                    {confirmLoading ? "Procesando..." : alert.confirmText}
+                                    {confirmLoading ? <CircularProgress size={14} color='inherit' /> : <CheckIcon fontSize='small' />}
                                 </Button>
                             </Stack>
-                        </Stack>
-                    )}
+                        )}
+                    </Stack>
                 </Alert>
             </Snackbar>
         </AlertContext.Provider>
