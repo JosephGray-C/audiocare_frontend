@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SupplierOrderListView from "../components/supplier-orders/SupplierOrderListView";
-import SupplierOrderFormView from "../components/supplier-orders/SupplierOrderFormView";
+import ModelProductListView from "../components/models/ModelProductListView";
+import ModelProductFormView from "../components/models/ModelProductFormView";
 import ModuleCarouselPage from "../components/ui/ModuleCarouselPage";
 
 const PANELS = [
@@ -8,34 +8,34 @@ const PANELS = [
     { key: "form", label: "Formulario" },
 ];
 
-export default function PedidosProveedor() {
+export default function ModelsProduct() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedModel, setSelectedModel] = useState(null);
 
     const totalSlides = PANELS.length;
 
     function handleStartCreate() {
-        setSelectedOrder(null);
+        setSelectedModel(null);
         setCurrentSlide(1);
     }
 
-    function handleStartEdit(order) {
-        setSelectedOrder(order);
+    function handleStartEdit(model) {
+        setSelectedModel(model);
         setCurrentSlide(1);
     }
 
-    function handleOrderSaved() {
+    function handleModelSaved() {
         setRefreshKey(prev => prev + 1);
-        setSelectedOrder(null);
+        setSelectedModel(null);
         setCurrentSlide(0);
     }
 
     return (
         <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
-            <SupplierOrderListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
+            <ModelProductListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
 
-            <SupplierOrderFormView order={selectedOrder} onSaved={handleOrderSaved} />
+            <ModelProductFormView model={selectedModel} onSaved={handleModelSaved} />
         </ModuleCarouselPage>
     );
 }

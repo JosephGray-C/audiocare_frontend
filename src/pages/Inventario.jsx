@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Boxes, Search, Filter, ChevronDown, ChevronRight, Loader2, Package } from "lucide-react";
 import { getAllProducts } from "../services/productService";
 import { useAlert } from "../context/AlertContext";
@@ -22,6 +22,11 @@ export default function Inventario() {
     const [expandedModels, setExpandedModels] = useState(new Set());
 
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     // ── Fetch ────────────────────────────────────────────────────────────
 
@@ -31,11 +36,11 @@ export default function Inventario() {
             const data = await getAllProducts();
             setProducts(data);
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoadingData(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchData();

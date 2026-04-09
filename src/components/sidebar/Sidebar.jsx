@@ -13,7 +13,7 @@ const AUTO_COLLAPSE_WIDTH = 980;
 export default function Sidebar() {
     const [manualCollapsed, setManualCollapsed] = useState(false);
     const windowWidth = useWindowWidth();
-    const { auth, logout } = useAuth();
+    const { logout } = useAuth();
     const { isMaster, canRead, canWrite } = usePermissions();
     const navigate = useNavigate();
 
@@ -30,65 +30,55 @@ export default function Sidebar() {
         navigate("/login", { replace: true });
     }
 
-    // Filter menu items based on permissions
     const visibleMenu = menu.filter(item => {
-        // Master-only items
         if (item.masterOnly) return isMaster;
-        // No permission key = always visible (Dashboard)
         if (!item.permission) return true;
-        // Items that require write access (Registrar Venta)
         if (item.requireWrite) return canWrite(item.permission);
-        // Regular items — need at least read
         return canRead(item.permission);
     });
 
     return (
         <aside
             className={`
-                h-full flex flex-col justify-between shrink-0
+                h-full shrink-0 flex flex-col overflow-hidden
                 bg-[#f8f8f8] border-r border-slate-200
                 transition-[width] duration-300
                 ${collapsed ? "w-24" : "w-64"}
             `}
         >
-            <div>
-                {/* Header */}
-                {!isAutoCollapsed && (
-                    <div
-                        className={`
+            {!isAutoCollapsed && (
+                <div
+                    className={`
                         flex items-center border-b border-slate-200
-                        px-4 py-5
+                        px-4 py-5 shrink-0
                         ${collapsed ? "justify-center" : "justify-between"}
                     `}
+                >
+                    {!collapsed && <img src={logo} alt='Audiocare' className='w-40 select-none pointer-events-none' draggable='false' />}
+
+                    <button
+                        onClick={handleToggle}
+                        className='
+                            flex items-center justify-center
+                            w-9 h-9 rounded-lg
+                            text-slate-700 hover:bg-slate-200
+                            transition-colors
+                        '
                     >
-                        {!collapsed && (
-                            <img src={logo} alt='Audiocare' className='w-40 select-none pointer-events-none' draggable='false' />
-                        )}
+                        {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+                    </button>
+                </div>
+            )}
 
-                        <button
-                            onClick={handleToggle}
-                            className='
-                                flex items-center justify-center
-                                w-9 h-9 rounded-lg
-                                text-slate-700 hover:bg-slate-200
-                                transition-colors
-                            '
-                        >
-                            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-                        </button>
-                    </div>
-                )}
-
-                {/* Menu */}
-                <nav className={`flex flex-col gap-2 p-4 ${collapsed ? "items-center" : ""}`}>
+            <div className='flex-1 min-h-0 overflow-y-auto hide-scrollbar'>
+                <nav className={`flex flex-col gap-2 p-4 pb-6 ${collapsed ? "items-center" : ""}`}>
                     {visibleMenu.map(item => (
                         <SidebarItem key={item.name} name={item.name} path={item.path} Icon={item.icon} collapsed={collapsed} />
                     ))}
                 </nav>
             </div>
 
-            {/* Logout */}
-            <div className='border-t border-slate-200 px-4 py-5'>
+            <div className='border-t border-slate-200 px-4 py-5 shrink-0'>
                 <button
                     onClick={handleLogout}
                     title={collapsed ? "Cerrar sesión" : ""}

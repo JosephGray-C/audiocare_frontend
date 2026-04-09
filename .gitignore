@@ -27,3 +27,7 @@ src/assets
 src/utils/delay.js
 
 .claude
+.claude/settings.local.json
+.gitignore
+.pnp.cjs
+.yarn/install-state.gz

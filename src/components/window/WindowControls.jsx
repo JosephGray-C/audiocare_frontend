@@ -5,13 +5,12 @@ const appWindow = getCurrentWindow();
 
 export default function WindowControls() {
     return (
-        <div className='flex items-center h-full pr-2'>
+        <div className='flex items-center h-full '>
             <button
                 onClick={() => appWindow.minimize()}
                 className='
-                    w-9 h-9
+                    w-8 h-8
                     flex items-center justify-center
-                    rounded-lg
                     text-slate-400
                     hover:bg-slate-200
                     hover:text-slate-700
@@ -25,9 +24,8 @@ export default function WindowControls() {
             <button
                 onClick={() => appWindow.toggleMaximize()}
                 className='
-                    w-9 h-9
+                    w-8 h-8
                     flex items-center justify-center
-                    rounded-lg
                     text-slate-400
                     hover:bg-slate-200
                     hover:text-slate-700
@@ -41,9 +39,8 @@ export default function WindowControls() {
             <button
                 onClick={() => appWindow.close()}
                 className='
-                    w-9 h-9
+                    w-8 h-8
                     flex items-center justify-center
-                    rounded-lg
                     text-slate-400
                     hover:bg-red-500
                     hover:text-white

@@ -1,35 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, Headphones, User, IdCard, UserPlus, LogIn } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
+import logo from "../assets/logo_color_AC.png";
 import { login } from "../services/Authservice";
-import { createAdmin } from "../services/adminService";
 import { useAuth } from "../context/AuthContext";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
 import LoadingButton from "../components/ui/LoadingButton";
-import RenderField from "../components/form/RenderField";
+import FormField from "../components/form/FormField";
+import DevRegisterPanel from "../components/auth/DevRegisterPanel";
 
-// ─── DEV MODE ────────────────────────────────────────────────────────────
-// Set to false (or remove the register UI entirely) before production.
-const DEV_ENABLE_REGISTER = true;
-// ─────────────────────────────────────────────────────────────────────────
+const DEV_ENABLE_REGISTER = false;
 
-const LOGIN_INITIAL = { email: "", password: "" };
-
-const REGISTER_INITIAL = {
-    identityNumber: "",
-    name: "",
-    lastName1: "",
-    lastName2: "",
+const LOGIN_INITIAL = {
     email: "",
     password: "",
-    isMaster: true, // First admin should be master; change as needed
 };
 
 export default function LoginPage() {
-    const [isRegister, setIsRegister] = useState(false);
     const [loginData, setLoginData] = useState(LOGIN_INITIAL);
-    const [registerData, setRegisterData] = useState(REGISTER_INITIAL);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
@@ -37,68 +26,32 @@ export default function LoginPage() {
     const { showAlert } = useAlert();
     const navigate = useNavigate();
 
-    const formData = isRegister ? registerData : loginData;
-    const setFormData = isRegister ? setRegisterData : setLoginData;
-
     function handleChange(e) {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setLoginData(prev => ({ ...prev, [name]: value }));
         setErrors(prev => ({ ...prev, [name]: null }));
     }
 
-    function toggleMode() {
-        setIsRegister(prev => !prev);
-        setErrors({});
-    }
-
-    // ── Validation ───────────────────────────────────────────────────────
-
     function validateLogin() {
         const newErrors = {};
+
         if (!loginData.email.trim()) {
             newErrors.email = "El correo es obligatorio";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email)) {
             newErrors.email = "Formato de correo inválido";
         }
+
         if (!loginData.password.trim()) {
             newErrors.password = "La contraseña es obligatoria";
         }
+
         return newErrors;
     }
-
-    function validateRegister() {
-        const newErrors = {};
-        if (!registerData.identityNumber.trim()) {
-            newErrors.identityNumber = "El número de identidad es obligatorio";
-        }
-        if (!registerData.name.trim()) {
-            newErrors.name = "El nombre es obligatorio";
-        }
-        if (!registerData.lastName1.trim()) {
-            newErrors.lastName1 = "El primer apellido es obligatorio";
-        }
-        if (!registerData.lastName2.trim()) {
-            newErrors.lastName2 = "El segundo apellido es obligatorio";
-        }
-        if (!registerData.email.trim()) {
-            newErrors.email = "El correo es obligatorio";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email)) {
-            newErrors.email = "Formato de correo inválido";
-        }
-        if (!registerData.password.trim()) {
-            newErrors.password = "La contraseña es obligatoria";
-        } else if (registerData.password.length < 8) {
-            newErrors.password = "La contraseña debe tener al menos 8 caracteres";
-        }
-        return newErrors;
-    }
-
-    // ── Submit ───────────────────────────────────────────────────────────
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const validationErrors = isRegister ? validateRegister() : validateLogin();
 
+        const validationErrors = validateLogin();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
@@ -107,17 +60,10 @@ export default function LoginPage() {
         try {
             setLoading(true);
 
-            if (isRegister) {
-                await createAdmin(registerData);
-                showAlert("Admin registrado correctamente. Ahora puede iniciar sesión.", "success");
-                setRegisterData(REGISTER_INITIAL);
-                setIsRegister(false);
-            } else {
-                const response = await login(loginData);
-                saveLogin(response);
-                showAlert(`Bienvenido, ${response.name}`, "success");
-                navigate("/", { replace: true });
-            }
+            const response = await login(loginData);
+            saveLogin(response);
+            showAlert(`Bienvenido, ${response.name}`, "success");
+            navigate("/", { replace: true });
         } catch (error) {
             handleApiError(error, showAlert);
         } finally {
@@ -125,283 +71,57 @@ export default function LoginPage() {
         }
     }
 
-    // ── Render ────────────────────────────────────────────────────────────
-
     return (
-        <div className="flex min-h-screen">
-            {/* Left panel — branding */}
-            <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-[#1a2332] to-[#2a3a4e] flex-col justify-between p-12">
-                {/* Decorative circles */}
-                <div className="absolute -top-20 -left-20 w-72 h-72 bg-[#34c3d6]/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#ef7d2d]/8 rounded-full blur-3xl" />
-                <div className="absolute top-1/2 left-1/3 w-40 h-40 bg-[#34c3d6]/5 rounded-full blur-2xl" />
+        <div className='w-full max-w-md'>
+            <div className='mb-8 flex flex-col items-center text-center'>
+                <img src={logo} alt='Audiocare' className='py-7 w-40 select-none pointer-events-none' draggable='false' />
 
-                {/* Top section */}
-                <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-xl bg-[#34c3d6]/20 flex items-center justify-center">
-                            <Headphones size={22} className="text-[#34c3d6]" />
-                        </div>
-                        <span className="text-white/90 text-xl font-semibold tracking-wide">
-                            AudioCare
-                        </span>
-                    </div>
-                </div>
+                <h1 className='text-2xl font-bold text-slate-900'>Iniciar sesión</h1>
 
-                {/* Center content */}
-                <div className="relative z-10 -mt-12">
-                    <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
-                        Sistema de Gestión
-                        <br />
-                        <span className="text-[#34c3d6]">de Inventario</span>
-                    </h1>
-                    <p className="text-white/50 text-base leading-relaxed max-w-md">
-                        Control completo de su inventario de dispositivos auditivos.
-                        Gestione pedidos, productos y ventas en un solo lugar.
-                    </p>
-
-                    {/* Stats row */}
-                    <div className="flex gap-8 mt-10">
-                        <div>
-                            <div className="text-2xl font-bold text-[#34c3d6]">FIFO</div>
-                            <div className="text-white/40 text-sm mt-1">Rotación inteligente</div>
-                        </div>
-                        <div className="w-px bg-white/10" />
-                        <div>
-                            <div className="text-2xl font-bold text-[#f0a45a]">€ / ₡</div>
-                            <div className="text-white/40 text-sm mt-1">Multi-moneda</div>
-                        </div>
-                        <div className="w-px bg-white/10" />
-                        <div>
-                            <div className="text-2xl font-bold text-white/80">100%</div>
-                            <div className="text-white/40 text-sm mt-1">Trazabilidad</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom */}
-                <div className="relative z-10">
-                    <p className="text-white/30 text-sm">
-                        © {new Date().getFullYear()} AudioCare — Dispositivos Auditivos
-                    </p>
-                </div>
+                <p className='mt-2 text-sm text-slate-500'>Ingrese sus credenciales para acceder al sistema</p>
             </div>
 
-            {/* Right panel — form */}
-            <div className="flex-1 flex items-center justify-center bg-[#f4f4f4] px-6 py-12">
-                <div className="w-full max-w-md">
-                    {/* Mobile logo */}
-                    <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
-                        <div className="w-10 h-10 rounded-xl bg-[#34c3d6]/15 flex items-center justify-center">
-                            <Headphones size={22} className="text-[#34c3d6]" />
-                        </div>
-                        <span className="text-slate-800 text-xl font-semibold tracking-wide">
-                            AudioCare
-                        </span>
+            <div className='rounded-2xl border border-slate-200 bg-white shadow-sm'>
+                <form id='loginForm' onSubmit={handleSubmit} className='space-y-4 p-6 sm:p-7'>
+                    <FormField
+                        name='email'
+                        label='Correo electrónico'
+                        type='email'
+                        icon={Mail}
+                        value={loginData.email}
+                        onChange={handleChange}
+                        error={errors.email}
+                        placeholder='admin@audiocare.com'
+                        autoComplete='email'
+                    />
+
+                    <FormField
+                        name='password'
+                        label='Contraseña'
+                        type='password'
+                        icon={Lock}
+                        value={loginData.password}
+                        onChange={handleChange}
+                        error={errors.password}
+                        placeholder='••••••••'
+                        autoComplete='current-password'
+                    />
+
+                    <div className='pt-1'>
+                        <LoadingButton type='submit' form='loginForm' loading={loading} className='w-full'>
+                            Ingresar
+                        </LoadingButton>
                     </div>
-
-                    {/* Card */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        {/* Card header */}
-                        <div className="px-6 pt-8 pb-2 lg:px-8">
-                            <h2 className="text-xl font-semibold text-slate-800">
-                                {isRegister ? "Registrar administrador" : "Iniciar sesión"}
-                            </h2>
-                            <p className="text-slate-400 text-sm mt-1">
-                                {isRegister
-                                    ? "Complete los datos para crear una cuenta de admin"
-                                    : "Ingrese sus credenciales para acceder al sistema"
-                                }
-                            </p>
-
-                            {/* DEV banner */}
-                            {isRegister && (
-                                <div className="mt-3 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200">
-                                    <p className="text-xs text-amber-700 font-medium">
-                                        Modo desarrollo — Este formulario se eliminará en producción
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Form */}
-                        <form
-                            id="authForm"
-                            onSubmit={handleSubmit}
-                            className="px-6 py-6 space-y-4 lg:px-8"
-                        >
-                            {isRegister ? (
-                                <>
-                                    <RenderField
-                                        name="identityNumber"
-                                        label="Número de identidad"
-                                        icon={IdCard}
-                                        value={formData.identityNumber}
-                                        onChange={handleChange}
-                                        error={errors.identityNumber}
-                                        placeholder="Ej: 123456789"
-                                    />
-                                    <RenderField
-                                        name="name"
-                                        label="Nombre"
-                                        icon={User}
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        error={errors.name}
-                                        placeholder="Ingrese su nombre"
-                                        autoComplete="given-name"
-                                    />
-
-                                    {/* Apellidos en una fila */}
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <RenderField
-                                            name="lastName1"
-                                            label="Primer apellido"
-                                            value={formData.lastName1}
-                                            onChange={handleChange}
-                                            error={errors.lastName1}
-                                            placeholder="Apellido 1"
-                                            autoComplete="family-name"
-                                        />
-                                        <RenderField
-                                            name="lastName2"
-                                            label="Segundo apellido"
-                                            value={formData.lastName2}
-                                            onChange={handleChange}
-                                            error={errors.lastName2}
-                                            placeholder="Apellido 2"
-                                        />
-                                    </div>
-
-                                    <RenderField
-                                        name="email"
-                                        label="Correo electrónico"
-                                        type="email"
-                                        icon={Mail}
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        error={errors.email}
-                                        placeholder="admin@audiocare.com"
-                                        autoComplete="email"
-                                    />
-
-                                    <RenderField
-                                        name="password"
-                                        label="Contraseña"
-                                        type="password"
-                                        icon={Lock}
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        error={errors.password}
-                                        placeholder="Mínimo 8 caracteres"
-                                        autoComplete="new-password"
-                                    />
-
-                                    {/* isMaster toggle */}
-                                    <div className="flex items-center gap-3 pt-1">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                setRegisterData(prev => ({
-                                                    ...prev,
-                                                    isMaster: !prev.isMaster,
-                                                }))
-                                            }
-                                            className={`
-                                                relative w-10 h-[22px] rounded-full transition-colors duration-200
-                                                ${registerData.isMaster ? "bg-[#34c3d6]" : "bg-slate-200"}
-                                            `}
-                                        >
-                                            <span
-                                                className={`
-                                                    absolute top-[3px] w-4 h-4 rounded-full bg-white shadow-sm
-                                                    transition-all duration-200
-                                                    ${registerData.isMaster ? "left-[22px]" : "left-[3px]"}
-                                                `}
-                                            />
-                                        </button>
-                                        <span className="text-sm text-slate-600">
-                                            Admin Master
-                                        </span>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <RenderField
-                                        name="email"
-                                        label="Correo electrónico"
-                                        type="email"
-                                        icon={Mail}
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        error={errors.email}
-                                        placeholder="admin@audiocare.com"
-                                        autoComplete="email"
-                                    />
-
-                                    <RenderField
-                                        name="password"
-                                        label="Contraseña"
-                                        type="password"
-                                        icon={Lock}
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        error={errors.password}
-                                        placeholder="••••••••"
-                                        autoComplete="current-password"
-                                    />
-                                </>
-                            )}
-
-                            {/* Submit */}
-                            <div className="pt-2">
-                                <LoadingButton
-                                    type="submit"
-                                    form="authForm"
-                                    loading={loading}
-                                    className="w-full"
-                                >
-                                    {isRegister ? "Registrar" : "Ingresar"}
-                                </LoadingButton>
-                            </div>
-                        </form>
-
-                        {/* Toggle login / register */}
-                        {DEV_ENABLE_REGISTER && (
-                            <div className="px-6 pb-6 lg:px-8">
-                                <button
-                                    type="button"
-                                    onClick={toggleMode}
-                                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
-                                        border border-slate-200 text-sm text-slate-500
-                                        hover:bg-slate-50 hover:text-slate-700
-                                        transition-colors"
-                                >
-                                    {isRegister ? (
-                                        <>
-                                            <LogIn size={15} />
-                                            Ya tengo cuenta — Iniciar sesión
-                                        </>
-                                    ) : (
-                                        <>
-                                            <UserPlus size={15} />
-                                            Registrar admin (dev)
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Footer text */}
-                    <p className="text-center text-xs text-slate-400 mt-6">
-                        {isRegister
-                            ? "El nuevo admin tendrá todos los permisos bloqueados hasta que el master los active"
-                            : "Contacte al administrador master si necesita acceso al sistema"
-                        }
-                    </p>
-                </div>
+                </form>
             </div>
+
+            <p className='mt-5 text-center text-xs text-slate-400'>Contacte al administrador master si necesita acceso al sistema</p>
+
+            {DEV_ENABLE_REGISTER && (
+                <div className='mt-6'>
+                    <DevRegisterPanel />
+                </div>
+            )}
         </div>
     );
 }

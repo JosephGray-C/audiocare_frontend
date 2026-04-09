@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
     LayoutDashboard, TrendingUp, TrendingDown, Package, ShoppingCart,
     Truck, Users, Boxes, DollarSign, AlertTriangle, ArrowRight,
@@ -20,7 +20,12 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const { auth } = useAuth();
     const { showAlert } = useAlert();
+    const alertRef = useRef(showAlert);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        alertRef.current = showAlert;
+    }, [showAlert]);
 
     const fetchAll = useCallback(async () => {
         try {
@@ -35,11 +40,11 @@ export default function Dashboard() {
             ]);
             setData({ products, orders, models, supplierOrders, clients, movements });
         } catch (error) {
-            handleApiError(error, showAlert);
+            handleApiError(error, alertRef.current);
         } finally {
             setLoading(false);
         }
-    }, [showAlert]);
+    }, []);
 
     useEffect(() => {
         fetchAll();
