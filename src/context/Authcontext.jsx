@@ -38,13 +38,17 @@ export function AuthProvider({ children }) {
         setAuth({
             token: loginResponse.token,
             adminId: loginResponse.adminId,
+            identityNumber: loginResponse.identityNumber,
             name: loginResponse.name,
             lastName1: loginResponse.lastName1,
+            lastName2: loginResponse.lastName2,
             email: loginResponse.email,
             isMaster: loginResponse.isMaster,
             permissions: loginResponse.permissions,
         });
     }
+
+    console.log(auth);
 
     function logout() {
         setAuth(null);
