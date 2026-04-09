@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Boxes, PlusCircle, FolderKanban, PackagePlus } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Boxes, Package, Truck, Hash, Users, ShieldCheck } from "lucide-react";
 
 export const menu = [
     {
@@ -7,23 +7,45 @@ export const menu = [
         icon: LayoutDashboard,
     },
     {
-        name: "Ventas",
-        path: "/ventas",
-        icon: ShoppingCart,
-    },
-    {
         name: "Inventario",
         path: "/inventario",
         icon: Boxes,
+        permission: "products",
     },
     {
-        name: "Registrar Venta",
-        path: "/registrar-venta",
-        icon: PlusCircle,
+        name: "Ventas",
+        path: "/ventas",
+        icon: ShoppingCart,
+        permission: "sales",
     },
     {
-        name: "Registrar Modelo Producto",
-        path: "/registrar-modelo-producto",
-        icon: FolderKanban,
+        name: "Modelos Producto",
+        path: "/modelos",
+        icon: Package,
+        permission: "models",
+    },
+    {
+        name: "Pedidos Proveedor",
+        path: "/pedidos-proveedor",
+        icon: Truck,
+        permission: "supplierOrders",
+    },
+    {
+        name: "Productos",
+        path: "/productos",
+        icon: Hash,
+        permission: "products",
+    },
+    {
+        name: "Clientes",
+        path: "/clientes",
+        icon: Users,
+        permission: "clients",
+    },
+    {
+        name: "Administradores",
+        path: "/admins",
+        icon: ShieldCheck,
+        masterOnly: true,
     },
 ];

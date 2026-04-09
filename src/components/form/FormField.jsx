@@ -1,45 +1,82 @@
-export default function FormField({ label, icon: Icon, prefix, name, value, onChange, placeholder, type = "text", error, disabled }) {
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+
+export default function FormField({
+    name,
+    label,
+    type = "text",
+    icon: Icon,
+    placeholder,
+    value,
+    prefix,
+    onChange,
+    error,
+    disabled = false,
+    autoComplete,
+    containerClassName = "",
+    inputClassName = "",
+    ...inputProps
+}) {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const isPasswordField = type === "password";
+    const inputType = isPasswordField ? (showPassword ? "text" : "password") : type;
+
+    const stateClasses = error
+        ? "border-red-300 bg-red-50/40"
+        : disabled
+          ? "border-slate-200 bg-slate-50"
+          : "border-slate-200 bg-white focus-within:border-[#34c3d6]";
+
+    const accentColor = error ? "text-red-400" : "text-slate-400";
+
     return (
-        <>
-            <div className='grid grid-cols-1 gap-3 lg:grid-cols-[180px_1fr] lg:items-center lg:gap-6'>
-                <label className='text-sm font-medium text-slate-700 leading-6'>{label}</label>
+        <div className={`space-y-1.5 ${containerClassName}`}>
+            <label htmlFor={name} className='block text-sm font-medium text-slate-600'>
+                {label}
+            </label>
 
-                <div
-                    className={`flex items-center w-full min-w-0 rounded-full border px-4 py-2 transition-colors
-                        ${
-                            error
-                                ? "border-red-400 bg-red-50"
-                                : disabled
-                                  ? "border-slate-200 bg-slate-100/80"
-                                  : "border-slate-200 bg-slate-100"
-                        }
+            <div
+                className={`
+                    flex items-center w-full rounded-xl border px-3.5 py-2.5 transition-colors
+                    ${stateClasses}
+                `}
+            >
+                {Icon ? <Icon size={15} className={`mr-2.5 shrink-0 ${accentColor}`} /> : null}
+
+                {prefix ? <span className={`mr-2 shrink-0 text-sm ${accentColor}`}>{prefix}</span> : null}
+
+                <input
+                    id={name}
+                    name={name}
+                    type={inputType}
+                    autoComplete={autoComplete}
+                    value={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    className={`
+                        w-full min-w-0 bg-transparent text-sm text-slate-700
+                        placeholder:text-slate-300 outline-none disabled:text-slate-500
+                        ${inputClassName}
                     `}
-                >
-                    {Icon && <Icon size={16} className='mr-2 shrink-0 text-slate-500' />}
+                    {...inputProps}
+                />
 
-                    {prefix && <span className='mr-2 shrink-0 text-slate-500'>{prefix}</span>}
-
-                    <input
-                        type={type}
-                        name={name}
-                        value={value}
-                        onChange={onChange}
+                {isPasswordField && (
+                    <button
+                        type='button'
+                        onClick={() => setShowPassword(prev => !prev)}
                         disabled={disabled}
-                        className={`w-full min-w-0 bg-transparent text-sm outline-none
-                            ${
-                                error
-                                    ? "text-red-500 placeholder:text-red-500"
-                                    : disabled
-                                      ? "text-slate-800"
-                                      : "text-slate-700 placeholder:text-slate-400"
-                            }
-                        `}
-                        placeholder={error ? error : placeholder}
-                    />
-                </div>
+                        className='ml-2 shrink-0 text-slate-400 transition-colors hover:text-slate-600 disabled:text-slate-300'
+                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                )}
             </div>
 
-            <div className='border-t border-slate-200' />
-        </>
+            {error ? <p className='text-xs text-red-500'>{error}</p> : null}
+        </div>
     );
 }

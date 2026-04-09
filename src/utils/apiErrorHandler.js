@@ -1,18 +1,24 @@
 export function handleApiError(error, showAlert) {
-    if (!error.response) {
+    // If fetch itself failed (network error, server down, etc.)
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
         showAlert("No se pudo conectar con el servidor", "error");
         return;
     }
 
-    const { status, data } = error.response;
+    // apiClient.js throws a plain Error with the message extracted
+    // from the backend JSON response, so we can use it directly.
+    const message = error?.message || "Error inesperado";
 
-    if (status === 400) {
-        showAlert(data.message || "Datos inválidos", "warning");
-    } else if (status === 409) {
-        showAlert(data.message || "El registro ya existe", "warning");
-    } else if (status >= 500) {
-        showAlert("Error interno del servidor", "error");
+    // Map known patterns to appropriate severity
+    if (message.includes("Ya existe")) {
+        showAlert(message, "warning");
+    } else if (
+        message.includes("obligatorio") ||
+        message.includes("inválido") ||
+        message.includes("Datos inválidos")
+    ) {
+        showAlert(message, "warning");
     } else {
-        showAlert("Error inesperado", "error");
+        showAlert(message, "error");
     }
 }
