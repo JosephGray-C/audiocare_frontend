@@ -94,7 +94,7 @@ export default function ProductListView({ refreshKey = 0, onStartCreate, onStart
 
         showConfirm({
             title: "Eliminar producto",
-            message: `¿Está seguro de eliminar el producto con serie "${product.serialNum}"? Se eliminará del inventario y se generará el movimiento correspondiente.`,
+            message: `¿Seguro de eliminar el producto? Se eliminará del inventario y se generará el movimiento correspondiente.`,
             confirmText: "Eliminar",
             cancelText: "Cancelar",
             severity: "error",

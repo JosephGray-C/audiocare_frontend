@@ -66,7 +66,7 @@ export default function ModelProductListView({ refreshKey = 0, onStartCreate, on
     function handleOpenDelete(model) {
         showConfirm({
             title: "Eliminar modelo",
-            message: `¿Está seguro de eliminar el modelo "${model.name}" (Código: ${model.modelCode})? Si tiene productos asociados, la eliminación fallará.`,
+            message: `¿Seguro de eliminar el modelo? Si tiene productos asociados, la eliminación fallará.`,
             confirmText: "Eliminar",
             cancelText: "Cancelar",
             severity: "error",
