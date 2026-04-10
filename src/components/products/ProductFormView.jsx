@@ -237,6 +237,7 @@ export default function ProductFormView({ product = null, onSaved }) {
                             name='entryDate'
                             label='Fecha de Ingreso'
                             icon={Calendar}
+                            dateTooltip='Seleccionar fecha de ingreso'
                             type='date'
                             value={formData.entryDate}
                             onChange={handleChange}

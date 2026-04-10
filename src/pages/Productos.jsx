@@ -32,7 +32,12 @@ export default function Productos() {
     }
 
     return (
-        <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
+        <ModuleCarouselPage
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            totalSlides={totalSlides}
+            panelLabels={PANELS.map(panel => panel.label)}
+        >
             <ProductsListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
 
             <ProductFormView product={selectedProduct} onSaved={handleProductSaved} />

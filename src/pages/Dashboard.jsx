@@ -14,6 +14,7 @@ import { getMovements } from "../services/inventoryMovementService";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
 import { useAuth } from "../context/AuthContext";
+import { formatCRC } from "../utils/currency";
 
 export default function Dashboard() {
     const [data, setData] = useState(null);
@@ -150,7 +151,8 @@ export default function Dashboard() {
     // ── Helpers ───────────────────────────────────────────────────────────
 
     function fmtCRC(value) {
-        return "₡ " + Number(value || 0).toLocaleString("es-CR");
+        const formatted = formatCRC(String(Math.round(Number(value || 0))));
+        return `₡ ${formatted || "0"}`;
     }
 
     function fmtShort(value) {

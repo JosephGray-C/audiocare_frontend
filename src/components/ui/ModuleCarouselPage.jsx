@@ -1,7 +1,7 @@
 import CarouselNavigation from "./CarouselNavigation";
 import useCarouselPage from "../../hooks/useCarouselPage";
 
-export default function ModuleCarouselPage({ currentSlide, setCurrentSlide, totalSlides, children }) {
+export default function ModuleCarouselPage({ currentSlide, setCurrentSlide, totalSlides, panelLabels = [], children }) {
     const { getSlideClasses } = useCarouselPage(currentSlide);
 
     const slides = Array.isArray(children) ? children : [children];
@@ -9,7 +9,12 @@ export default function ModuleCarouselPage({ currentSlide, setCurrentSlide, tota
     return (
         <div className='flex min-h-full flex-col gap-4'>
             <div className='py-3'>
-                <CarouselNavigation currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides} />
+                <CarouselNavigation
+                    currentSlide={currentSlide}
+                    setCurrentSlide={setCurrentSlide}
+                    totalSlides={totalSlides}
+                    panelLabels={panelLabels}
+                />
             </div>
 
             <div className='-mx-4 lg:-mx-6 xl:-mx-8'>
@@ -37,6 +42,7 @@ export default function ModuleCarouselPage({ currentSlide, setCurrentSlide, tota
                     currentSlide={currentSlide}
                     setCurrentSlide={setCurrentSlide}
                     totalSlides={totalSlides}
+                    panelLabels={panelLabels}
                     justify='center'
                 />
             </div>

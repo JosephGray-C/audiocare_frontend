@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, Lock, User, IdCard, ShieldPlus } from "lucide-react";
-import { createAdmin } from "../../services/adminService";
+import { createAdmin } from "../../services/AdminService";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import LoadingButton from "../ui/LoadingButton";

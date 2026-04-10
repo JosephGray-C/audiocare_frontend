@@ -8,6 +8,7 @@ import useWindowWidth from "../../hooks/useWindowWidth";
 import { useAuth } from "../../context/AuthContext";
 import usePermissions from "../../hooks/usePermissions";
 import { useAlert } from "../../context/AlertContext";
+import AppToolTip from "../ui/AppToolTip";
 
 const AUTO_COLLAPSE_WIDTH = 980;
 
@@ -52,6 +53,58 @@ export default function Sidebar() {
         return canRead(item.permission);
     });
 
+    const collapseMessage = collapsed ? "Expandir barra lateral" : "Contraer barra lateral";
+
+    const profileButton = (
+        <button
+            onClick={handlePerfil}
+            aria-label='Ir al perfil'
+            className={`
+                flex items-center w-full rounded-xl
+                ${collapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"}
+                text-[#34c3d6] hover:bg-[#34c3d6]/10
+                transition-colors
+            `}
+        >
+            <User size={18} className='text-[#34c3d6]' />
+
+            <span
+                className={`
+                    whitespace-nowrap overflow-hidden text-ellipsis
+                    transition-all duration-200
+                    ${collapsed ? "opacity-0 w-0 ml-0" : "opacity-100 ml-1"}
+                `}
+            >
+                Perfil
+            </span>
+        </button>
+    );
+
+    const logoutButton = (
+        <button
+            onClick={handleLogout}
+            aria-label='Cerrar sesión'
+            className={`
+                flex items-center w-full rounded-xl
+                ${collapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"}
+                text-red-500 hover:bg-red-100
+                transition-colors
+            `}
+        >
+            <LogOut size={18} />
+
+            <span
+                className={`
+                    whitespace-nowrap overflow-hidden text-ellipsis
+                    transition-all duration-200
+                    ${collapsed ? "opacity-0 w-0 ml-0" : "opacity-100 ml-1"}
+                `}
+            >
+                Cerrar Sesión
+            </span>
+        </button>
+    );
+
     return (
         <aside
             className={`
@@ -71,17 +124,20 @@ export default function Sidebar() {
                 >
                     {!collapsed && <img src={logo} alt='Audiocare' className='w-40 select-none pointer-events-none' draggable='false' />}
 
-                    <button
-                        onClick={handleToggle}
-                        className='
-                            flex items-center justify-center
-                            w-9 h-9 rounded-lg
-                            text-slate-700 hover:bg-slate-200
-                            transition-colors
-                        '
-                    >
-                        {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-                    </button>
+                    <AppToolTip message={collapseMessage} position='bottom'>
+                        <button
+                            onClick={handleToggle}
+                            aria-label={collapseMessage}
+                            className='
+                                flex items-center justify-center
+                                w-9 h-9 rounded-lg
+                                text-slate-700 hover:bg-slate-200
+                                transition-colors
+                            '
+                        >
+                            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+                        </button>
+                    </AppToolTip>
                 </div>
             )}
 
@@ -94,51 +150,21 @@ export default function Sidebar() {
             </div>
 
             <div className='border-t border-slate-200 px-4 py-5 shrink-0 space-y-2'>
-                <button
-                    onClick={handlePerfil}
-                    title={collapsed ? "Cerrar sesión" : ""}
-                    className={`
-                        flex items-center w-full rounded-xl
-                        ${collapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"}
-                        text-[#34c3d6] hover:bg-[#34c3d6]/10
-                        transition-colors
-                    `}
-                >
-                    <User size={18} className='text-[#34c3d6]' />
+                {collapsed ? (
+                    <AppToolTip message='Perfil' position='right' className='w-full'>
+                        {profileButton}
+                    </AppToolTip>
+                ) : (
+                    profileButton
+                )}
 
-                    <span
-                        className={`
-                            whitespace-nowrap overflow-hidden text-ellipsis
-                            transition-all duration-200
-                            ${collapsed ? "opacity-0 w-0 ml-0" : "opacity-100 ml-1"}
-                        `}
-                    >
-                        Perfil
-                    </span>
-                </button>
-
-                <button
-                    onClick={handleLogout}
-                    title={collapsed ? "Cerrar sesión" : ""}
-                    className={`
-                        flex items-center w-full rounded-xl
-                        ${collapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"}
-                        text-red-500 hover:bg-red-100
-                        transition-colors
-                    `}
-                >
-                    <LogOut size={18} />
-
-                    <span
-                        className={`
-                            whitespace-nowrap overflow-hidden text-ellipsis
-                            transition-all duration-200
-                            ${collapsed ? "opacity-0 w-0 ml-0" : "opacity-100 ml-1"}
-                        `}
-                    >
-                        Cerrar Sesión
-                    </span>
-                </button>
+                {collapsed ? (
+                    <AppToolTip message='Cerrar sesión' position='right' className='w-full'>
+                        {logoutButton}
+                    </AppToolTip>
+                ) : (
+                    logoutButton
+                )}
             </div>
         </aside>
     );

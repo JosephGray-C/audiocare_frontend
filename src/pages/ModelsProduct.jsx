@@ -32,7 +32,12 @@ export default function ModelsProduct() {
     }
 
     return (
-        <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
+        <ModuleCarouselPage
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            totalSlides={totalSlides}
+            panelLabels={PANELS.map(panel => panel.label)}
+        >
             <ModelProductListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
 
             <ModelProductFormView model={selectedModel} onSaved={handleModelSaved} />

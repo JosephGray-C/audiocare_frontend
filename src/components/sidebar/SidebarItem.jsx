@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
+import AppToolTip from "../ui/AppToolTip";
 
 export default function SidebarItem({ name, path, Icon, collapsed }) {
-    return (
+    const link = (
         <NavLink
             to={path}
-            title={collapsed ? name : ""}
             className={({ isActive }) => `
                 relative flex items-center w-full rounded-xl
                 ${collapsed ? "justify-center px-0 py-4" : "gap-3 px-4 py-4"}
@@ -30,5 +30,13 @@ export default function SidebarItem({ name, path, Icon, collapsed }) {
                 </>
             )}
         </NavLink>
+    );
+
+    if (!collapsed) return link;
+
+    return (
+        <AppToolTip message={name} position='right' className='w-full'>
+            {link}
+        </AppToolTip>
     );
 }

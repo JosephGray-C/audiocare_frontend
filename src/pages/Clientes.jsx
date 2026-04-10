@@ -32,7 +32,12 @@ export default function Clientes() {
     }
 
     return (
-        <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
+        <ModuleCarouselPage
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            totalSlides={totalSlides}
+            panelLabels={PANELS.map(panel => panel.label)}
+        >
             <ClientsListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
 
             <ClientFormView client={selectedClient} onSaved={handleClientSaved} />

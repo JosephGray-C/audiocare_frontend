@@ -5,6 +5,7 @@ import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
+import AppToolTip from "../ui/AppToolTip";
 
 const TYPE_LABELS = {
     PRIVATE: "Privado",
@@ -233,23 +234,27 @@ export default function ClientsListView({ refreshKey = 0, onStartCreate, onStart
                                         <td className='px-5 py-3.5'>
                                             {hasWriteAccess && (
                                                 <div className='flex items-center justify-center gap-1'>
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => onStartEdit?.(client)}
-                                                        title='Editar'
-                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors'
-                                                    >
-                                                        <Pencil size={14} />
-                                                    </button>
+                                                    <AppToolTip message='Editar' position='top'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() => onStartEdit?.(client)}
+                                                            aria-label='Editar'
+                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors'
+                                                        >
+                                                            <Pencil size={14} />
+                                                        </button>
+                                                    </AppToolTip>
 
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => handleOpenDelete(client)}
-                                                        title='Eliminar'
-                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
+                                                    <AppToolTip message='Eliminar' position='top'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() => handleOpenDelete(client)}
+                                                            aria-label='Eliminar'
+                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </AppToolTip>
                                                 </div>
                                             )}
                                         </td>

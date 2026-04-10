@@ -32,7 +32,12 @@ export default function PedidosProveedor() {
     }
 
     return (
-        <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
+        <ModuleCarouselPage
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            totalSlides={totalSlides}
+            panelLabels={PANELS.map(panel => panel.label)}
+        >
             <SupplierOrderListView refreshKey={refreshKey} onStartCreate={handleStartCreate} onStartEdit={handleStartEdit} />
 
             <SupplierOrderFormView order={selectedOrder} onSaved={handleOrderSaved} />

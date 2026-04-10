@@ -7,6 +7,7 @@ import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
+import AppToolTip from "../ui/AppToolTip";
 
 const STATUS_LABELS = {
     AVAILABLE: "Disponible",
@@ -282,7 +283,11 @@ export default function ProductListView({ refreshKey = 0, onStartCreate, onStart
                                     </td>
                                 </tr>
                             ) : (
-                                filtered.map(product => (
+                                filtered.map(product => {
+                                    const editMessage = product.status === "BILLED" ? "No editable (facturado)" : "Editar";
+                                    const deleteMessage = product.status === "BILLED" ? "No eliminable (facturado)" : "Eliminar";
+
+                                    return (
                                     <tr key={product.id} className='hover:bg-slate-50/60 transition-colors'>
                                         <td className='px-5 py-3.5'>
                                             <span className='font-mono text-sm text-slate-700 bg-slate-100 px-2 py-0.5 rounded'>
@@ -330,42 +335,47 @@ export default function ProductListView({ refreshKey = 0, onStartCreate, onStart
                                         <td className='px-5 py-3.5'>
                                             {hasWriteAccess && (
                                                 <div className='flex items-center justify-center gap-1'>
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => handleEditClick(product)}
-                                                        title={product.status === "BILLED" ? "No editable (facturado)" : "Editar"}
-                                                        className={`
-                                                            w-8 h-8 flex items-center justify-center rounded-lg transition-colors
-                                                            ${
-                                                                product.status === "BILLED"
-                                                                    ? "text-slate-300 cursor-not-allowed"
-                                                                    : "text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6]"
-                                                            }
-                                                        `}
-                                                    >
-                                                        <Pencil size={14} />
-                                                    </button>
+                                                    <AppToolTip message={editMessage} position='top'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() => handleEditClick(product)}
+                                                            aria-label={editMessage}
+                                                            className={`
+                                                                w-8 h-8 flex items-center justify-center rounded-lg transition-colors
+                                                                ${
+                                                                    product.status === "BILLED"
+                                                                        ? "text-slate-300 cursor-not-allowed"
+                                                                        : "text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6]"
+                                                                }
+                                                            `}
+                                                        >
+                                                            <Pencil size={14} />
+                                                        </button>
+                                                    </AppToolTip>
 
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => handleOpenDelete(product)}
-                                                        title={product.status === "BILLED" ? "No eliminable (facturado)" : "Eliminar"}
-                                                        className={`
-                                                            w-8 h-8 flex items-center justify-center rounded-lg transition-colors
-                                                            ${
-                                                                product.status === "BILLED"
-                                                                    ? "text-slate-300 cursor-not-allowed"
-                                                                    : "text-slate-400 hover:bg-red-50 hover:text-red-500"
-                                                            }
-                                                        `}
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
+                                                    <AppToolTip message={deleteMessage} position='top'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() => handleOpenDelete(product)}
+                                                            aria-label={deleteMessage}
+                                                            className={`
+                                                                w-8 h-8 flex items-center justify-center rounded-lg transition-colors
+                                                                ${
+                                                                    product.status === "BILLED"
+                                                                        ? "text-slate-300 cursor-not-allowed"
+                                                                        : "text-slate-400 hover:bg-red-50 hover:text-red-500"
+                                                                }
+                                                            `}
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </AppToolTip>
                                                 </div>
                                             )}
                                         </td>
                                     </tr>
-                                ))
+                                );
+                                })
                             )}
                         </tbody>
                     </table>

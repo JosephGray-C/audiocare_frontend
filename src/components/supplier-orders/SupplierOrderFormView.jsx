@@ -165,6 +165,7 @@ export default function SupplierOrderFormView({ order = null, onSaved }) {
                             name='receivedDate'
                             label='Fecha de Recepción'
                             icon={Calendar}
+                            dateTooltip='Seleccionar fecha de recepción'
                             type='date'
                             value={formData.receivedDate}
                             onChange={handleChange}

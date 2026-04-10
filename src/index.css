@@ -43,6 +43,13 @@ input::-ms-clear {
   display: none;
 }
 
+.date-input-no-native-picker::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
 .main-content-scroll,
 .scroll-area {
   scrollbar-gutter: stable;

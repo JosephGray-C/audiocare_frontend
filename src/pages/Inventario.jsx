@@ -3,6 +3,7 @@ import { Boxes, Search, Filter, ChevronDown, ChevronRight, Loader2, Package } fr
 import { getAllProducts } from "../services/productService";
 import { useAlert } from "../context/AlertContext";
 import { handleApiError } from "../utils/apiErrorHandler";
+import { formatCRC } from "../utils/currency";
 
 const STATUS_STYLES = {
     AVAILABLE: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -153,7 +154,8 @@ export default function Inventario() {
     }
 
     function fmtCRC(value) {
-        return "₡ " + Number(value || 0).toLocaleString("es-CR");
+        const formatted = formatCRC(String(Math.round(Number(value || 0))));
+        return `₡ ${formatted || "0"}`;
     }
 
     // ── Render ───────────────────────────────────────────────────────────

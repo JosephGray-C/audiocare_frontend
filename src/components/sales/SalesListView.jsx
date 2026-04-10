@@ -5,6 +5,8 @@ import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
+import AppToolTip from "../ui/AppToolTip";
+import { formatCRC } from "../../utils/currency";
 
 const STATUS_LABELS = {
     PENDING: "Pendiente",
@@ -152,7 +154,8 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
     }
 
     function fmtCRC(value) {
-        return `₡ ${Number(value || 0).toLocaleString("es-CR")}`;
+        const formatted = formatCRC(String(Math.round(Number(value || 0))));
+        return `₡ ${formatted || "0"}`;
     }
 
     function clientName(order) {
@@ -318,6 +321,7 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
                                     const nextStatus = getNextStatus(order.status);
                                     const canCancel = order.status !== "CANCELED" && order.status !== "COMPLETED";
                                     const canDelete = order.status === "CANCELED";
+                                    const nextStatusMessage = nextStatus ? `Avanzar a ${STATUS_LABELS[nextStatus]}` : "";
 
                                     return (
                                         <tr key={order.id} className='hover:bg-slate-50/60 transition-colors'>
@@ -361,36 +365,42 @@ export default function SalesListView({ refreshKey = 0, onStartCreateSale }) {
                                                         ) : (
                                                             <>
                                                                 {nextStatus && (
-                                                                    <button
-                                                                        type='button'
-                                                                        onClick={() => handleStatusChange(order.id, nextStatus)}
-                                                                        title={`Avanzar a ${STATUS_LABELS[nextStatus]}`}
-                                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors'
-                                                                    >
-                                                                        <ArrowRightCircle size={15} />
-                                                                    </button>
+                                                                    <AppToolTip message={nextStatusMessage} position='top'>
+                                                                        <button
+                                                                            type='button'
+                                                                            onClick={() => handleStatusChange(order.id, nextStatus)}
+                                                                            aria-label={nextStatusMessage}
+                                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors'
+                                                                        >
+                                                                            <ArrowRightCircle size={15} />
+                                                                        </button>
+                                                                    </AppToolTip>
                                                                 )}
 
                                                                 {canCancel && (
-                                                                    <button
-                                                                        type='button'
-                                                                        onClick={() => handleCancel(order.id)}
-                                                                        title='Cancelar orden'
-                                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-colors'
-                                                                    >
-                                                                        <XCircle size={15} />
-                                                                    </button>
+                                                                    <AppToolTip message='Cancelar orden' position='top'>
+                                                                        <button
+                                                                            type='button'
+                                                                            onClick={() => handleCancel(order.id)}
+                                                                            aria-label='Cancelar orden'
+                                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-colors'
+                                                                        >
+                                                                            <XCircle size={15} />
+                                                                        </button>
+                                                                    </AppToolTip>
                                                                 )}
 
                                                                 {canDelete && (
-                                                                    <button
-                                                                        type='button'
-                                                                        onClick={() => handleOpenDelete(order)}
-                                                                        title='Eliminar orden'
-                                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
-                                                                    >
-                                                                        <Trash2 size={14} />
-                                                                    </button>
+                                                                    <AppToolTip message='Eliminar orden' position='top'>
+                                                                        <button
+                                                                            type='button'
+                                                                            onClick={() => handleOpenDelete(order)}
+                                                                            aria-label='Eliminar orden'
+                                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
+                                                                        >
+                                                                            <Trash2 size={14} />
+                                                                        </button>
+                                                                    </AppToolTip>
                                                                 )}
                                                             </>
                                                         )}

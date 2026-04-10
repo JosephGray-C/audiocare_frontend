@@ -24,7 +24,12 @@ export default function Sales() {
     }
 
     return (
-        <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
+        <ModuleCarouselPage
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            totalSlides={totalSlides}
+            panelLabels={PANELS.map(panel => panel.label)}
+        >
             <SalesListView refreshKey={refreshKey} onStartCreateSale={handleStartCreateSale} />
 
             <SalesFormView onSaleCreated={handleSaleCreated} />

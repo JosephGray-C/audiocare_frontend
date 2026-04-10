@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useRef, useState } from "react";
+import { Calendar, Eye, EyeOff } from "lucide-react";
+import AppToolTip from "../ui/AppToolTip";
 
 export default function FormField({
     name,
     label,
     type = "text",
     icon: Icon,
+    iconTooltip = "",
+    dateTooltip = "Abrir calendario",
     placeholder,
     value,
     prefix,
@@ -18,8 +21,10 @@ export default function FormField({
     ...inputProps
 }) {
     const [showPassword, setShowPassword] = useState(false);
+    const inputRef = useRef(null);
 
     const isPasswordField = type === "password";
+    const isDateField = type === "date";
     const inputType = isPasswordField ? (showPassword ? "text" : "password") : type;
 
     const stateClasses = error
@@ -29,6 +34,17 @@ export default function FormField({
           : "border-slate-200 bg-white focus-within:border-[#34c3d6]";
 
     const accentColor = error ? "text-red-400" : "text-slate-400";
+
+    function handleOpenDatePicker() {
+        if (!inputRef.current || disabled) return;
+
+        if (typeof inputRef.current.showPicker === "function") {
+            inputRef.current.showPicker();
+            return;
+        }
+
+        inputRef.current.focus();
+    }
 
     return (
         <div className={`space-y-1.5 ${containerClassName}`}>
@@ -42,11 +58,22 @@ export default function FormField({
                     ${stateClasses}
                 `}
             >
-                {Icon ? <Icon size={15} className={`mr-2.5 shrink-0 ${accentColor}`} /> : null}
+                {Icon ? (
+                    iconTooltip ? (
+                        <AppToolTip message={iconTooltip} position='top'>
+                            <span className={`mr-2.5 inline-flex shrink-0 ${accentColor}`}>
+                                <Icon size={15} />
+                            </span>
+                        </AppToolTip>
+                    ) : (
+                        <Icon size={15} className={`mr-2.5 shrink-0 ${accentColor}`} />
+                    )
+                ) : null}
 
                 {prefix ? <span className={`mr-2 shrink-0 text-sm ${accentColor}`}>{prefix}</span> : null}
 
                 <input
+                    ref={inputRef}
                     id={name}
                     name={name}
                     type={inputType}
@@ -58,21 +85,38 @@ export default function FormField({
                     className={`
                         w-full min-w-0 bg-transparent text-sm text-slate-700
                         placeholder:text-slate-300 outline-none disabled:text-slate-500
+                        ${isDateField ? "date-input-no-native-picker" : ""}
                         ${inputClassName}
                     `}
                     {...inputProps}
                 />
 
+                {isDateField && (
+                    <AppToolTip message={dateTooltip} position='top'>
+                        <button
+                            type='button'
+                            onClick={handleOpenDatePicker}
+                            disabled={disabled}
+                            className='ml-2 shrink-0 text-slate-400 transition-colors hover:text-slate-600 disabled:text-slate-300'
+                            aria-label={dateTooltip}
+                        >
+                            <Calendar size={15} />
+                        </button>
+                    </AppToolTip>
+                )}
+
                 {isPasswordField && (
-                    <button
-                        type='button'
-                        onClick={() => setShowPassword(prev => !prev)}
-                        disabled={disabled}
-                        className='ml-2 shrink-0 text-slate-400 transition-colors hover:text-slate-600 disabled:text-slate-300'
-                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                    >
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                    <AppToolTip message={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} position='top'>
+                        <button
+                            type='button'
+                            onClick={() => setShowPassword(prev => !prev)}
+                            disabled={disabled}
+                            className='ml-2 shrink-0 text-slate-400 transition-colors hover:text-slate-600 disabled:text-slate-300'
+                            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                    </AppToolTip>
                 )}
             </div>
 

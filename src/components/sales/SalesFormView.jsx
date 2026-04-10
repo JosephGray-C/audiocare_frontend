@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ShoppingCart, Plus, Trash2, Loader2, AlertCircle } from "lucide-react";
+import { ShoppingCart, Plus, Trash2, Loader2, AlertCircle, Calendar } from "lucide-react";
 import { getClients } from "../../services/clientService";
 import { getModelProducts } from "../../services/modelProductService";
 import { getProductsByModel } from "../../services/productService";
@@ -9,6 +9,8 @@ import { handleApiError } from "../../utils/apiErrorHandler";
 import SearchableSelect from "../ui/SearchableSelect";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 import ModuleFormActions from "../ui/ModuleFormActions";
+import AppToolTip from "../ui/AppToolTip";
+import FormField from "../form/FormField";
 
 const TAX_RATE = 0.13;
 
@@ -372,30 +374,20 @@ export default function SalesFormView({ onSaleCreated }) {
                                 {errors.invoiceNum && <p className='text-xs text-red-500'>{errors.invoiceNum}</p>}
                             </div>
 
-                            <div className='space-y-1.5'>
-                                <label htmlFor='saleDate' className='block text-sm font-medium text-slate-600'>
-                                    Fecha de venta
-                                </label>
-                                <input
-                                    id='saleDate'
-                                    type='date'
-                                    value={saleDate}
-                                    onChange={e => {
-                                        setSaleDate(e.target.value);
-                                        setErrors(prev => ({ ...prev, saleDate: null }));
-                                    }}
-                                    className={`
-                                        w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-700
-                                        outline-none transition-colors
-                                        ${
-                                            errors.saleDate
-                                                ? "border-red-300 bg-red-50/40"
-                                                : "border-slate-200 bg-white focus:border-[#34c3d6]"
-                                        }
-                                    `}
-                                />
-                                {errors.saleDate && <p className='text-xs text-red-500'>{errors.saleDate}</p>}
-                            </div>
+                            <FormField
+                                id='saleDate'
+                                name='saleDate'
+                                label='Fecha de venta'
+                                icon={Calendar}
+                                dateTooltip='Seleccionar fecha de venta'
+                                type='date'
+                                value={saleDate}
+                                onChange={e => {
+                                    setSaleDate(e.target.value);
+                                    setErrors(prev => ({ ...prev, saleDate: null }));
+                                }}
+                                error={errors.saleDate}
+                            />
                         </div>
                     </div>
 
@@ -480,13 +472,16 @@ function ProductLineCard({ line, index, modelOptions, canRemove, onModelChange, 
                 <span className='text-sm font-medium text-slate-600'>Producto #{index + 1}</span>
 
                 {canRemove && (
-                    <button
-                        type='button'
-                        onClick={onRemove}
-                        className='w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
-                    >
-                        <Trash2 size={14} />
-                    </button>
+                    <AppToolTip message='Quitar producto' position='top'>
+                        <button
+                            type='button'
+                            onClick={onRemove}
+                            aria-label='Quitar producto'
+                            className='w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    </AppToolTip>
                 )}
             </div>
 

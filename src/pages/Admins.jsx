@@ -14,6 +14,7 @@ export default function Admins() {
         const baseSlides = [
             {
                 key: "list",
+                label: "Listado",
                 content: (
                     <AdminsListView
                         refreshKey={refreshKey}
@@ -25,6 +26,7 @@ export default function Admins() {
             },
             {
                 key: "form",
+                label: selectedAdmin ? "Editar admin" : "Nuevo admin",
                 content: <AdminFormView admin={selectedAdmin} onSaved={handleAdminSaved} />,
             },
         ];
@@ -32,6 +34,7 @@ export default function Admins() {
         if (permissionsAdmin) {
             baseSlides.push({
                 key: "permissions",
+                label: "Permisos",
                 content: <AdminPermissionsView admin={permissionsAdmin} onSaved={handlePermissionsSaved} />,
             });
         }
@@ -73,7 +76,12 @@ export default function Admins() {
     }
 
     return (
-        <ModuleCarouselPage currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} totalSlides={totalSlides}>
+        <ModuleCarouselPage
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            totalSlides={totalSlides}
+            panelLabels={slides.map(slide => slide.label)}
+        >
             {slides.map(slide => slide.content)}
         </ModuleCarouselPage>
     );

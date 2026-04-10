@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
+import AppToolTip from "../ui/AppToolTip";
 
 export default function AdminsListView({ refreshKey = 0, onStartCreate, onStartEdit, onStartPermissions }) {
     const [admins, setAdmins] = useState([]);
@@ -256,34 +257,40 @@ export default function AdminsListView({ refreshKey = 0, onStartCreate, onStartE
                                             <td className='px-5 py-3.5'>
                                                 <div className='flex items-center justify-center gap-1'>
                                                     {!admin.isMaster && (
-                                                        <button
-                                                            type='button'
-                                                            onClick={() => onStartPermissions?.(admin)}
-                                                            title='Gestionar permisos'
-                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#ef7d2d]/10 hover:text-[#ef7d2d] transition-colors'
-                                                        >
-                                                            <Shield size={14} />
-                                                        </button>
+                                                        <AppToolTip message='Gestionar permisos' position='top'>
+                                                            <button
+                                                                type='button'
+                                                                onClick={() => onStartPermissions?.(admin)}
+                                                                aria-label='Gestionar permisos'
+                                                                className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#ef7d2d]/10 hover:text-[#ef7d2d] transition-colors'
+                                                            >
+                                                                <Shield size={14} />
+                                                            </button>
+                                                        </AppToolTip>
                                                     )}
 
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => onStartEdit?.(admin)}
-                                                        title='Editar'
-                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors'
-                                                    >
-                                                        <Pencil size={14} />
-                                                    </button>
-
-                                                    {!admin.isMaster && !isSelf && (
+                                                    <AppToolTip message='Editar' position='top'>
                                                         <button
                                                             type='button'
-                                                            onClick={() => handleOpenDelete(admin)}
-                                                            title='Eliminar'
-                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
+                                                            onClick={() => onStartEdit?.(admin)}
+                                                            aria-label='Editar'
+                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors'
                                                         >
-                                                            <Trash2 size={14} />
+                                                            <Pencil size={14} />
                                                         </button>
+                                                    </AppToolTip>
+
+                                                    {!admin.isMaster && !isSelf && (
+                                                        <AppToolTip message='Eliminar' position='top'>
+                                                            <button
+                                                                type='button'
+                                                                onClick={() => handleOpenDelete(admin)}
+                                                                aria-label='Eliminar'
+                                                                className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        </AppToolTip>
                                                     )}
                                                 </div>
                                             </td>

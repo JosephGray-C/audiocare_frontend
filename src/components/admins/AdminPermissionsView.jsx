@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Shield, Eye, Pencil } from "lucide-react";
 import { updateAdminPermissions } from "../../services/adminService";
 import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
 import ModuleFormActions from "../ui/ModuleFormActions";
+import AppToolTip from "../ui/AppToolTip";
 
 const MODULES = [
     { key: "model", label: "Modelos de Producto", readKey: "modelRead", crudKey: "modelCrud", crudLabel: "CRUD" },
@@ -155,6 +156,8 @@ export default function AdminPermissionsView({ admin = null, onSaved }) {
                             const readOn = perms[module.readKey];
                             const crudOn = module.crudKey ? perms[module.crudKey] : false;
                             const readLocked = crudOn;
+                            const readMessage = readLocked ? "Activo por escritura" : readOn ? "Desactivar lectura" : "Activar lectura";
+                            const crudMessage = crudOn ? `Desactivar ${module.crudLabel}` : `Activar ${module.crudLabel}`;
 
                             return (
                                 <div
@@ -170,43 +173,47 @@ export default function AdminPermissionsView({ admin = null, onSaved }) {
                                     </div>
 
                                     <div className='flex justify-center'>
-                                        <button
-                                            type='button'
-                                            onClick={() => !readLocked && toggleRead(module.readKey, module.crudKey)}
-                                            disabled={readLocked}
-                                            title={readLocked ? "Activo por escritura" : readOn ? "Desactivar lectura" : "Activar lectura"}
-                                            className={`
-                                                w-9 h-9 flex items-center justify-center rounded-lg transition-all
-                                                ${
-                                                    readOn
-                                                        ? readLocked
-                                                            ? "bg-[#34c3d6]/15 text-[#34c3d6] cursor-default"
-                                                            : "bg-[#34c3d6]/15 text-[#34c3d6] hover:bg-[#34c3d6]/25"
-                                                        : "bg-slate-100 text-slate-400 hover:bg-slate-200"
-                                                }
-                                            `}
-                                        >
-                                            <Eye size={15} />
-                                        </button>
-                                    </div>
-
-                                    <div className='flex justify-center'>
-                                        {module.crudKey ? (
+                                        <AppToolTip message={readMessage} position='top'>
                                             <button
                                                 type='button'
-                                                onClick={() => toggleCrud(module.readKey, module.crudKey)}
-                                                title={crudOn ? `Desactivar ${module.crudLabel}` : `Activar ${module.crudLabel}`}
+                                                onClick={() => !readLocked && toggleRead(module.readKey, module.crudKey)}
+                                                disabled={readLocked}
+                                                aria-label={readMessage}
                                                 className={`
                                                     w-9 h-9 flex items-center justify-center rounded-lg transition-all
                                                     ${
-                                                        crudOn
-                                                            ? "bg-[#ef7d2d]/15 text-[#ef7d2d] hover:bg-[#ef7d2d]/25"
+                                                        readOn
+                                                            ? readLocked
+                                                                ? "bg-[#34c3d6]/15 text-[#34c3d6] cursor-default"
+                                                                : "bg-[#34c3d6]/15 text-[#34c3d6] hover:bg-[#34c3d6]/25"
                                                             : "bg-slate-100 text-slate-400 hover:bg-slate-200"
                                                     }
                                                 `}
                                             >
-                                                <Pencil size={14} />
+                                                <Eye size={15} />
                                             </button>
+                                        </AppToolTip>
+                                    </div>
+
+                                    <div className='flex justify-center'>
+                                        {module.crudKey ? (
+                                            <AppToolTip message={crudMessage} position='top'>
+                                                <button
+                                                    type='button'
+                                                    onClick={() => toggleCrud(module.readKey, module.crudKey)}
+                                                    aria-label={crudMessage}
+                                                    className={`
+                                                        w-9 h-9 flex items-center justify-center rounded-lg transition-all
+                                                        ${
+                                                            crudOn
+                                                                ? "bg-[#ef7d2d]/15 text-[#ef7d2d] hover:bg-[#ef7d2d]/25"
+                                                                : "bg-slate-100 text-slate-400 hover:bg-slate-200"
+                                                        }
+                                                    `}
+                                                >
+                                                    <Pencil size={14} />
+                                                </button>
+                                            </AppToolTip>
                                         ) : (
                                             <span className='text-xs text-slate-300'>—</span>
                                         )}

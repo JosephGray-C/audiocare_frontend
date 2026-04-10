@@ -1,5 +1,4 @@
 const API_URL = "http://localhost:8080/audiocare/api";
-
 const STORAGE_KEY = "audiocare_auth";
 
 function getToken() {
@@ -29,30 +28,31 @@ export async function apiRequest(endpoint, options = {}) {
         headers,
     });
 
+    // Handle 401
     if (response.status === 401) {
-        // Token expired or invalid — clear auth and redirect
-        localStorage.removeItem(STORAGE_KEY);
-        window.location.hash = "#/login";
-        throw new Error("Sesión expirada. Por favor inicie sesión nuevamente.");
+        if (token) {
+            // Session expired
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.hash = "#/login";
+            throw new Error("Sesión expirada. Por favor inicie sesión nuevamente.");
+        }
     }
 
+    // Handle 403
     if (response.status === 403) {
         throw new Error("No tienes permisos para realizar esta acción.");
     }
 
+    // Handle other errors (including 401 without token)
     if (!response.ok) {
-        // Try to extract error message from backend
         let errorMessage = "Error en la solicitud";
         try {
             const errorBody = await response.json();
             errorMessage = errorBody.message || errorBody.error || errorMessage;
-        } catch {
-            // ignore parse errors
-        }
+        } catch {}
         throw new Error(errorMessage);
     }
 
-    // Some endpoints return 204 No Content
     if (response.status === 204) return null;
 
     return response.json();

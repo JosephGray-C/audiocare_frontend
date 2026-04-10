@@ -5,6 +5,8 @@ import { useAlert } from "../../context/AlertContext";
 import { handleApiError } from "../../utils/apiErrorHandler";
 import usePermissions from "../../hooks/usePermissions";
 import ModulePanelHeader from "../ui/ModulePanelHeader";
+import AppToolTip from "../ui/AppToolTip";
+import { formatCRC, formatConvertedCurrency } from "../../utils/currency";
 
 const STATUS_LABELS = {
     AVAILABLE: "Disponible",
@@ -83,17 +85,12 @@ export default function ModelProductListView({ refreshKey = 0, onStartCreate, on
     }
 
     function fmtCRC(value) {
-        return "₡ " + Number(value || 0).toLocaleString("es-CR");
+        const formatted = formatCRC(String(Math.round(Number(value || 0))));
+        return `₡ ${formatted || "0"}`;
     }
 
     function fmtEUR(value) {
-        return (
-            "€ " +
-            Number(value || 0).toLocaleString("es-CR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 4,
-            })
-        );
+        return `€ ${formatConvertedCurrency(value)}`;
     }
 
     const hasActiveFilters = search.trim() || statusFilter !== "ALL";
@@ -239,23 +236,27 @@ export default function ModelProductListView({ refreshKey = 0, onStartCreate, on
                                         <td className='px-5 py-3.5'>
                                             {hasWriteAccess && (
                                                 <div className='flex items-center justify-center gap-1'>
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => onStartEdit?.(model)}
-                                                        title='Editar'
-                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors'
-                                                    >
-                                                        <Pencil size={14} />
-                                                    </button>
+                                                    <AppToolTip message='Editar' position='top'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() => onStartEdit?.(model)}
+                                                            aria-label='Editar'
+                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-[#34c3d6]/10 hover:text-[#34c3d6] transition-colors'
+                                                        >
+                                                            <Pencil size={14} />
+                                                        </button>
+                                                    </AppToolTip>
 
-                                                    <button
-                                                        type='button'
-                                                        onClick={() => handleOpenDelete(model)}
-                                                        title='Eliminar'
-                                                        className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
+                                                    <AppToolTip message='Eliminar' position='top'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() => handleOpenDelete(model)}
+                                                            aria-label='Eliminar'
+                                                            className='w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors'
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </AppToolTip>
                                                 </div>
                                             )}
                                         </td>

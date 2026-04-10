@@ -226,22 +226,18 @@ export default function ModelProductFormView({ model = null, onSaved }) {
                                 error={errors.priceSale}
                             />
 
-                            <div className='grid grid-cols-1 gap-2 lg:grid-cols-[165px_1fr] lg:gap-6'>
-                                <div className='hidden lg:block' />
+                            <div className='pt-1'>
+                                <div className='inline-flex items-center gap-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5'>
+                                    <div className='flex items-center'>
+                                        <Euro size={15} className='text-slate-500 mr-2 shrink-0' />
+                                        <span className='text-sm text-slate-600 tabular-nums'>{euros}</span>
+                                    </div>
 
-                                <div className='pt-1 lg:pl-4'>
-                                    <div className='flex items-center gap-6 rounded-2xl px-4 py-2.5 border bg-slate-50 border-slate-200 w-fit'>
-                                        <div className='flex items-center'>
-                                            <Euro size={15} className='text-slate-500 mr-2 shrink-0' />
-                                            <span className='text-sm text-slate-600 tabular-nums'>{euros}</span>
-                                        </div>
+                                    <div className='h-5 w-px shrink-0 bg-slate-200' />
 
-                                        <div className='w-px h-5 bg-slate-200 shrink-0' />
-
-                                        <div className='flex items-center'>
-                                            <DollarSign size={15} className='text-slate-500 mr-2 shrink-0' />
-                                            <span className='text-sm text-slate-600 tabular-nums'>{usd}</span>
-                                        </div>
+                                    <div className='flex items-center'>
+                                        <DollarSign size={15} className='text-slate-500 mr-2 shrink-0' />
+                                        <span className='text-sm text-slate-600 tabular-nums'>{usd}</span>
                                     </div>
                                 </div>
                             </div>
