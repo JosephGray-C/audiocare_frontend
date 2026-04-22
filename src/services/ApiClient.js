@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/audiocare/api";
+const API_URL = "http://198.199.68.97/audiocare/api";
 const STORAGE_KEY = "audiocare_auth";
 
 function getToken() {
